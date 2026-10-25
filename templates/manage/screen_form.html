@@ -1,0 +1,115 @@
+{% extends "manage/base_admin.html" %}
+
+{% block title %}{% if is_create %}Add Screen{% else %}Edit {{ screen.screen_name }}{% endif %} — Cenebook Admin{% endblock %}
+
+{% block admin_content %}
+<div style="max-width: 700px;">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb" style="font-size:0.875rem;">
+      <li class="breadcrumb-item"><a href="{% url 'admin_theatre_list' %}" class="text-secondary">Theatres</a></li>
+      <li class="breadcrumb-item active text-secondary" aria-current="page">{% if is_create %}Add Screen to {{ theatre.theatre_name }}{% else %}Edit Screen{% endif %}</li>
+    </ol>
+  </nav>
+
+  <div class="cb-admin-header mb-3">
+    <div>
+      <h1 class="cb-admin-title">{% if is_create %}Add Screen{% else %}Edit Screen{% endif %}</h1>
+      <p class="text-secondary mb-0">Theatre: <strong>{{ theatre.theatre_name }}</strong></p>
+    </div>
+  </div>
+
+  {% if has_bookings %}
+    <div class="cb-alert cb-alert-warning mb-4">
+      <i class="bi bi-lock-fill"></i>
+      <div>
+        <strong>Seat layout is locked.</strong> Because shows on this screen have customer bookings, row count and seats-per-row cannot be altered.
+      </div>
+    </div>
+  {% endif %}
+
+  <div class="cb-card p-4">
+    <form method="post" id="screen-form">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="cb-alert cb-alert-danger mb-4">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          <div>
+            {% for error in form.non_field_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="cb-form-group">
+        <label for="{{ form.screen_name.id_for_label }}" class="cb-label">Screen / Auditorium Name *</label>
+        {{ form.screen_name }}
+        {% if form.screen_name.errors %}
+          <div class="cb-error-text">{{ form.screen_name.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6 cb-form-group">
+          <label for="{{ form.rows.id_for_label }}" class="cb-label">Number of Rows (1 to 26) *</label>
+          {{ form.rows }}
+          <div class="form-text text-secondary" style="font-size:0.8125rem;">Rows are labelled A, B, C...</div>
+          {% if form.rows.errors %}
+            <div class="cb-error-text">{{ form.rows.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-6 cb-form-group">
+          <label for="{{ form.seats_per_row.id_for_label }}" class="cb-label">Seats Per Row (1 to 30) *</label>
+          {{ form.seats_per_row }}
+          <div class="form-text text-secondary" style="font-size:0.8125rem;">Seats are numbered 1, 2, 3...</div>
+          {% if form.seats_per_row.errors %}
+            <div class="cb-error-text">{{ form.seats_per_row.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <!-- Capacity calculation preview -->
+      <div class="p-3 bg-body-tertiary rounded mb-4" id="capacity-preview">
+        <span class="text-secondary" style="font-size:0.875rem;">Calculated Capacity: </span>
+        <strong id="capacity-val" class="text-accent" style="font-size:1.1rem;">96 seats</strong>
+        <span class="text-secondary" style="font-size:0.8125rem;"> (e.g. A1 to H12)</span>
+      </div>
+
+      <div class="d-flex gap-2 pt-3 border-top mt-4">
+        <button type="submit" class="cb-btn cb-btn-primary" id="btn-save-screen">
+          {% if is_create %}Create Screen & Generate Seats{% else %}Save Changes{% endif %}
+        </button>
+        <a href="{% url 'admin_theatre_list' %}" class="cb-btn cb-btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const rowsInput = document.getElementById('id_rows');
+    const seatsInput = document.getElementById('id_seats_per_row');
+    const capVal = document.getElementById('capacity-val');
+
+    function updateCapacity() {
+      const r = parseInt(rowsInput.value || 0, 10);
+      const s = parseInt(seatsInput.value || 0, 10);
+      const total = r * s;
+      if (total > 0) {
+        capVal.textContent = total + ' seats';
+      } else {
+        capVal.textContent = '0 seats';
+      }
+    }
+
+    if (rowsInput && seatsInput) {
+      rowsInput.addEventListener('input', updateCapacity);
+      seatsInput.addEventListener('input', updateCapacity);
+      updateCapacity();
+    }
+  })();
+</script>
+{% endblock %}

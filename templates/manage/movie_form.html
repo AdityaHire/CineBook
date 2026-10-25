@@ -1,0 +1,144 @@
+{% extends "manage/base_admin.html" %}
+
+{% block title %}{% if is_create %}Add Movie{% else %}Edit {{ movie.title }}{% endif %} — Cenebook Admin{% endblock %}
+
+{% block admin_content %}
+<div style="max-width: 800px;">
+  <!-- Breadcrumb -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb" style="font-size:0.875rem;">
+      <li class="breadcrumb-item"><a href="{% url 'admin_movie_list' %}" class="text-secondary">Movies</a></li>
+      <li class="breadcrumb-item active text-secondary" aria-current="page">{% if is_create %}New Movie{% else %}Edit Movie{% endif %}</li>
+    </ol>
+  </nav>
+
+  <div class="cb-admin-header mb-3">
+    <div>
+      <h1 class="cb-admin-title">{% if is_create %}Add New Movie{% else %}Edit Movie{% endif %}</h1>
+      <p class="text-secondary mb-0">Fill in the movie details below</p>
+    </div>
+  </div>
+
+  <div class="cb-card p-4">
+    <form method="post" id="movie-form">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="cb-alert cb-alert-danger mb-4">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          <div>
+            {% for error in form.non_field_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="cb-form-group">
+        <label for="{{ form.title.id_for_label }}" class="cb-label">Movie Title *</label>
+        {{ form.title }}
+        {% if form.title.errors %}
+          <div class="cb-error-text">{{ form.title.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6 cb-form-group">
+          <label for="{{ form.genre.id_for_label }}" class="cb-label">Genre *</label>
+          {{ form.genre }}
+          {% if form.genre.errors %}
+            <div class="cb-error-text">{{ form.genre.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-6 cb-form-group">
+          <label for="{{ form.language.id_for_label }}" class="cb-label">Language *</label>
+          {{ form.language }}
+          {% if form.language.errors %}
+            <div class="cb-error-text">{{ form.language.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="row g-3">
+        <div class="col-md-6 cb-form-group">
+          <label for="{{ form.duration_minutes.id_for_label }}" class="cb-label">Duration (Minutes) *</label>
+          {{ form.duration_minutes }}
+          {% if form.duration_minutes.errors %}
+            <div class="cb-error-text">{{ form.duration_minutes.errors.0 }}</div>
+          {% endif %}
+        </div>
+        <div class="col-md-6 cb-form-group">
+          <label for="{{ form.release_date.id_for_label }}" class="cb-label">Release Date *</label>
+          {{ form.release_date }}
+          {% if form.release_date.errors %}
+            <div class="cb-error-text">{{ form.release_date.errors.0 }}</div>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="cb-form-group">
+        <label for="{{ form.description.id_for_label }}" class="cb-label">Synopsis / Description *</label>
+        {{ form.description }}
+        {% if form.description.errors %}
+          <div class="cb-error-text">{{ form.description.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="cb-form-group">
+        <label for="{{ form.poster_url.id_for_label }}" class="cb-label">Poster Image URL</label>
+        {{ form.poster_url }}
+        {% if form.poster_url.errors %}
+          <div class="cb-error-text">{{ form.poster_url.errors.0 }}</div>
+        {% endif %}
+        <div class="form-text text-secondary" style="font-size:0.8125rem;">Direct image link (JPG/PNG). Leave empty to use fallback poster.</div>
+
+        <!-- Live Poster Preview -->
+        <div class="mt-2" id="poster-preview-box" style="display:none;">
+          <div class="text-secondary mb-1" style="font-size:0.75rem; font-weight:600; text-transform:uppercase;">Preview</div>
+          <img id="poster-preview-img" src="" alt="Poster Preview" style="width:100px; height:140px; object-fit:cover; border-radius:8px; border:1px solid var(--cb-border);" />
+        </div>
+      </div>
+
+      <div class="cb-form-group">
+        <label for="{{ form.status.id_for_label }}" class="cb-label">Status *</label>
+        {{ form.status }}
+        {% if form.status.errors %}
+          <div class="cb-error-text">{{ form.status.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="d-flex gap-2 pt-3 border-top mt-4">
+        <button type="submit" class="cb-btn cb-btn-primary" id="btn-save-movie">
+          {% if is_create %}Create Movie{% else %}Save Changes{% endif %}
+        </button>
+        <a href="{% url 'admin_movie_list' %}" class="cb-btn cb-btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  (function () {
+    const input = document.getElementById('id_poster_url');
+    const previewBox = document.getElementById('poster-preview-box');
+    const previewImg = document.getElementById('poster-preview-img');
+
+    function updatePreview() {
+      const url = (input.value || '').trim();
+      if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+        previewImg.src = url;
+        previewBox.style.display = 'block';
+      } else {
+        previewBox.style.display = 'none';
+      }
+    }
+
+    if (input) {
+      input.addEventListener('input', updatePreview);
+      updatePreview();
+    }
+  })();
+</script>
+{% endblock %}

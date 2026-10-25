@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Select Seats — {{ movie.title }} — Cenebook{% endblock %}
+{% block meta_description %}Select seats for {{ movie.title }} at {{ theatre.theatre_name }} ({{ screen.screen_name }}). Live seat map with instant booking holds.{% endblock %}
+
+{% block content %}
+<div class="cb-container py-4">
+
+  <!-- Show Header & Back Link -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2 mb-3">
+    <div>
+      <nav aria-label="breadcrumb" class="mb-1">
+        <ol class="breadcrumb mb-0" style="font-size:0.8125rem;">
+          <li class="breadcrumb-item"><a href="{% url 'movie_details' movie.id %}" class="text-secondary"><i class="bi bi-arrow-left"></i> {{ movie.title }}</a></li>
+          <li class="breadcrumb-item active text-secondary" aria-current="page">Select Seats</li>
+        </ol>
+      </nav>
+      <h1 class="h3 fw-bold mb-1" style="letter-spacing:-0.02em;">{{ movie.title }}</h1>
+      <div class="text-secondary" style="font-size:0.9rem;">
+        <strong>{{ theatre.theatre_name }}</strong> &bull; {{ screen.screen_name }} &bull;
+        <span class="text-accent fw-semibold">{{ show.local_start|date:"D, d M Y · h:i A" }}</span>
+      </div>
+    </div>
+
+    <div>
+      <span class="cb-badge cb-badge-accent py-2 px-3" style="font-size:0.9rem;">
+        Rs {{ show.ticket_price }} <span class="text-secondary fw-normal">per seat</span>
+      </span>
+    </div>
+  </div>
+
+  <!-- Conflict & Info Alerts -->
+  <div id="seat-map-alert"></div>
+
+  <!-- Interactive Seat Map Wrapper -->
+  <div
+    class="seat-map-wrapper mb-5"
+    id="seat-map-container"
+    data-show-id="{{ show.id }}"
+    data-ticket-price="{{ show.ticket_price }}"
+    data-max-seats="{{ max_seats }}"
+  >
+    <!-- Zoom Controls -->
+    <div class="map-zoom-controls">
+      <button type="button" class="map-zoom-btn" id="zoom-in-btn" title="Zoom in" aria-label="Zoom in">+</button>
+      <button type="button" class="map-zoom-btn" id="zoom-out-btn" title="Zoom out" aria-label="Zoom out">&minus;</button>
+      <button type="button" class="map-zoom-btn" id="zoom-reset-btn" title="Reset zoom" aria-label="Reset zoom"><i class="bi bi-aspect-ratio" style="font-size:0.75rem;"></i></button>
+    </div>
+
+    <!-- Cinema Screen Graphic -->
+    <div class="cinema-screen-container">
+      <div class="cinema-screen"></div>
+      <div class="cinema-screen-label"><i class="bi bi-tv me-1"></i> Screen This Way</div>
+    </div>
+
+    <!-- Scrollable Canvas Area -->
+    <div class="seat-map-scroll-area" id="seat-map-scroll-area">
+      <div class="seat-map-canvas" id="seat-map-canvas">
+        <!-- Injected dynamically by seatmap.js -->
+        <div class="py-5 text-center text-secondary">
+          <div class="spinner-border spinner-border-sm text-primary mb-2" role="status"></div>
+          <div>Loading seat map…</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Seat State Legend -->
+    <div class="seat-legend">
+      <div class="legend-item">
+        <div class="legend-box" style="background:var(--cb-bg); border:1.5px solid var(--cb-border);"></div>
+        <span>Available</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-box" style="background:var(--cb-accent); border:1.5px solid var(--cb-accent);"></div>
+        <span>Selected (You)</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-box" style="background:repeating-linear-gradient(45deg, rgba(255,159,10,0.18), rgba(255,159,10,0.18) 3px, rgba(255,159,10,0.35) 3px, rgba(255,159,10,0.35) 6px); border:1.5px solid var(--cb-warning);"></div>
+        <span>Held by other</span>
+      </div>
+      <div class="legend-item">
+        <div class="legend-box" style="background:var(--cb-surface-2); border:1.5px solid var(--cb-border);"></div>
+        <span>Booked</span>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Sticky Bottom Selection Sheet -->
+<aside class="cb-selection-sheet" id="selection-sheet">
+  <div class="cb-selection-sheet-inner">
+    <div>
+      <div class="d-flex align-items-center gap-2 mb-1">
+        <strong id="selected-seats-count" style="font-size:1.05rem;">0 seats</strong>
+        <span class="text-secondary" style="font-size:0.8125rem;">(Max {{ max_seats }} seats)</span>
+      </div>
+      <div id="selected-seats-list" class="d-flex flex-wrap align-items-center">
+        <span class="text-secondary" style="font-size:0.875rem;">No seats selected</span>
+      </div>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+      <div class="text-end">
+        <div class="text-secondary" style="font-size:0.75rem; text-transform:uppercase; font-weight:600;">Total Price</div>
+        <div class="h4 fw-bold mb-0 text-accent" id="total-price-display">Rs 0.00</div>
+      </div>
+      <button
+        type="button"
+        class="cb-btn cb-btn-primary"
+        id="continue-to-summary-btn"
+        disabled
+        style="padding:0.75rem 1.6rem; font-size:1rem;"
+      >
+        Continue <i class="bi bi-arrow-right ms-1"></i>
+      </button>
+    </div>
+  </div>
+</aside>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/seatmap.js' %}"></script>
+{% endblock %}

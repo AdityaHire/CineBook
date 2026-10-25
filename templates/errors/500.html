@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Something Went Wrong — Cenebook{% endblock %}
+
+{% block content %}
+<div class="cb-error-page">
+  <div class="cb-error-code">500</div>
+  <h1 class="cb-error-title">Something went wrong.</h1>
+  <p class="cb-error-desc">We've noted the issue. Please try again, and if the problem persists check My Bookings before retrying a payment.</p>
+  <a href="/" class="cb-btn cb-btn-primary" id="err500-home">
+    <i class="bi bi-house"></i> Back to Home
+  </a>
+</div>
+{% endblock %}

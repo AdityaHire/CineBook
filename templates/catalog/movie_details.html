@@ -1,0 +1,157 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{{ movie.title }} — Showtimes & Tickets — Cenebook{% endblock %}
+{% block meta_description %}Book tickets for {{ movie.title }} ({{ movie.genre }}, {{ movie.language }}, {{ movie.duration_display }}). Select date, theatre, and showtime on Cenebook.{% endblock %}
+
+{% block content %}
+<div class="cb-container py-4">
+
+  <!-- Breadcrumb navigation -->
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb" style="font-size:0.875rem;">
+      <li class="breadcrumb-item"><a href="/" class="text-secondary"><i class="bi bi-arrow-left"></i> All Movies</a></li>
+      <li class="breadcrumb-item active text-secondary" aria-current="page">{{ movie.title }}</li>
+    </ol>
+  </nav>
+
+  <!-- Movie Hero Header -->
+  <div class="movie-hero" id="movie-hero">
+    <div class="movie-hero-poster">
+      {% if movie.poster_url %}
+        <img
+          src="{{ movie.poster_url }}"
+          alt="{{ movie.title }} Poster"
+          id="movie-poster"
+          onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+        />
+        <div class="movie-card-poster-placeholder" style="display:none; aspect-ratio:2/3;">
+          <i class="bi bi-film"></i>
+        </div>
+      {% else %}
+        <div class="movie-card-poster-placeholder" style="aspect-ratio:2/3;">
+          <i class="bi bi-film"></i>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="movie-hero-content">
+      <div class="d-flex align-items-center gap-2 flex-wrap">
+        <h1 class="movie-hero-title" id="movie-title">{{ movie.title }}</h1>
+        <span class="cb-badge cb-badge-accent">Now Showing</span>
+      </div>
+
+      <div class="movie-meta-chips">
+        <span class="movie-meta-pill"><i class="bi bi-tag-fill me-1"></i>{{ movie.genre }}</span>
+        <span class="movie-meta-pill"><i class="bi bi-translate me-1"></i>{{ movie.language }}</span>
+        <span class="movie-meta-pill"><i class="bi bi-clock-fill me-1"></i>{{ movie.duration_display }}</span>
+        <span class="movie-meta-pill"><i class="bi bi-calendar-event me-1"></i>Released {{ movie.release_date|date:"d M Y" }}</span>
+      </div>
+
+      <div class="cb-divider"></div>
+
+      <div>
+        <h2 class="h6 fw-bold text-secondary text-uppercase mb-2" style="letter-spacing:0.04em;">Synopsis</h2>
+        <p class="movie-hero-desc mb-0" id="movie-description">{{ movie.description }}</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Shows & Showtimes Selection -->
+  <div class="mb-5" id="showtimes-section">
+    <h2 class="h4 fw-bold mb-3" style="letter-spacing:-0.015em;">Select Date & Showtimes</h2>
+
+    {% if has_shows %}
+      <!-- Date Chips Row with Apple scroll edge fade -->
+      <div class="scroll-edge-fade mb-4">
+        <div class="date-chips-scroller" id="date-chips" role="tablist">
+          {% for d in dates %}
+            <a
+              href="?date={{ d.date_str }}"
+              class="date-chip {% if d.date_str == selected_date %}active{% endif %}"
+              id="date-chip-{{ d.date_str }}"
+              role="tab"
+              aria-selected="{% if d.date_str == selected_date %}true{% else %}false{% endif %}"
+            >
+              <span class="date-chip-day">{{ d.day_label }}</span>
+              <span class="date-chip-date">{{ d.formatted_date }}</span>
+            </a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <!-- Theatres & Shows for the Selected Date -->
+      {% if theatres_data %}
+        <div class="d-flex flex-column gap-3" id="theatres-list">
+          {% for th in theatres_data %}
+            <div class="theatre-card" id="theatre-card-{{ th.theatre.id }}">
+              <div class="theatre-header">
+                <div>
+                  <h3 class="theatre-name">{{ th.theatre.theatre_name }}</h3>
+                  <div class="theatre-loc"><i class="bi bi-geo-alt-fill text-secondary me-1"></i>{{ th.theatre.location }}</div>
+                </div>
+              </div>
+
+              <div class="showtimes-grid">
+                {% for item in th.shows %}
+                  {% if item.is_bookable and item.availability != 'sold_out' and item.availability != 'closed' %}
+                    <a
+                      href="/shows/{{ item.show.id }}/seats/"
+                      class="showtime-btn"
+                      id="showtime-btn-{{ item.show.id }}"
+                      title="Screen: {{ item.screen_name }} · Price: Rs {{ item.price }}"
+                    >
+                      <span class="showtime-time">{{ item.local_time }}</span>
+                      <span class="showtime-meta">{{ item.screen_name }} · Rs {{ item.price }}</span>
+                      <span class="showtime-status {{ item.availability }}">
+                        {% if item.availability == 'filling_fast' %}
+                          Filling Fast
+                        {% else %}
+                          Available
+                        {% endif %}
+                      </span>
+                    </a>
+                  {% else %}
+                    <button
+                      type="button"
+                      class="showtime-btn disabled"
+                      id="showtime-btn-{{ item.show.id }}"
+                      disabled
+                      aria-disabled="true"
+                      title="Screen: {{ item.screen_name }}"
+                    >
+                      <span class="showtime-time">{{ item.local_time }}</span>
+                      <span class="showtime-meta">{{ item.screen_name }}</span>
+                      <span class="showtime-status {{ item.availability }}">
+                        {% if item.availability == 'sold_out' %}
+                          Sold Out
+                        {% else %}
+                          Closed
+                        {% endif %}
+                      </span>
+                    </button>
+                  {% endif %}
+                {% endfor %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="cb-card text-center py-4">
+          <p class="text-secondary mb-0">No shows scheduled on this date. Please choose another date above.</p>
+        </div>
+      {% endif %}
+
+    {% else %}
+      <div class="cb-card text-center py-5">
+        <div class="display-6 text-secondary mb-3"><i class="bi bi-calendar-x"></i></div>
+        <h3 class="h5 fw-bold">No shows are scheduled for this movie right now</h3>
+        <p class="text-secondary mb-3">Please check back later or check other now-showing movies.</p>
+        <a href="/" class="cb-btn cb-btn-secondary">Back to Movies</a>
+      </div>
+    {% endif %}
+
+  </div>
+
+</div>
+{% endblock %}

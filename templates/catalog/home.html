@@ -1,0 +1,272 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+  {% if active_category == 'concerts' %}Live Concerts & Music Festivals — Cenebook
+  {% elif active_category == 'shows' %}Comedy & Theatrical Shows — Cenebook
+  {% elif active_category == 'streaming' %}Streaming Premieres & Digital Cinema — Cenebook
+  {% elif active_category == 'movies' %}Now Showing Movies — Cenebook
+  {% else %}Cenebook — Movies, Live Concerts, Shows & Streaming{% endif %}
+{% endblock %}
+
+{% block meta_description %}Book tickets for movies, live music concerts, comedy standup shows, and streaming digital cinema premieres on Cenebook.{% endblock %}
+
+{% block content %}
+<div class="cb-container py-4">
+
+  <!-- Header & Mobile Search Bar -->
+  <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-3">
+    <div>
+      <h1 class="h2 fw-bold mb-1" style="letter-spacing:-0.025em;">
+        {% if query %}
+          Search Results
+        {% elif active_category == 'concerts' %}
+          Live Concerts & Music Festivals
+        {% elif active_category == 'shows' %}
+          Comedy Specials & Theatrical Plays
+        {% elif active_category == 'streaming' %}
+          Streaming Premieres & Digital Cinema
+        {% elif active_category == 'movies' %}
+          Now Showing in Cinemas
+        {% else %}
+          Explore Entertainment
+        {% endif %}
+      </h1>
+      <p class="text-secondary mb-0">
+        {% if query %}
+          Showing results for “<strong>{{ query }}</strong>” ({{ total_count }} found)
+        {% elif active_category != 'all' %}
+          Explore top-rated {{ active_category }} available to book right now ({{ total_count }})
+        {% else %}
+          Browse movies, live music concerts, comedy specials, and streaming premieres across all venues
+        {% endif %}
+      </p>
+    </div>
+
+    <!-- Mobile Search Form -->
+    <form method="get" action="/" class="d-md-none w-100" id="mobile-search-form">
+      {% if active_category != 'all' %}
+        <input type="hidden" name="category" value="{{ active_category }}" />
+      {% endif %}
+      <div class="input-group">
+        <input
+          type="search"
+          name="q"
+          class="cb-input"
+          placeholder="Search by title…"
+          value="{{ query }}"
+          aria-label="Search"
+          id="mobile-search-input"
+        />
+        <button class="cb-btn cb-btn-primary" type="submit" id="mobile-search-btn">
+          <i class="bi bi-search"></i>
+        </button>
+      </div>
+    </form>
+
+    {% if query or active_category != 'all' %}
+      <a href="/" class="cb-btn cb-btn-secondary cb-btn-sm align-self-start align-self-md-auto" id="clear-search-btn">
+        <i class="bi bi-arrow-counterclockwise"></i> View All
+      </a>
+    {% endif %}
+  </div>
+
+  <!-- Category Pills Navigation Bar (Apple / BookMyShow Style) -->
+  <div class="cb-category-nav-wrapper">
+    <nav class="cb-category-nav" aria-label="Category Filter">
+      {% for cat in categories_meta %}
+        <a
+          href="/?category={{ cat.id }}{% if query %}&q={{ query }}{% endif %}"
+          class="cb-category-pill {% if active_category == cat.id %}active{% endif %}"
+          id="cat-pill-{{ cat.id }}"
+        >
+          <i class="bi {{ cat.icon }}"></i>
+          <span>{{ cat.label }}</span>
+          {% if cat.count > 0 %}
+            <span class="badge">{{ cat.count }}</span>
+          {% endif %}
+        </a>
+      {% endfor %}
+    </nav>
+  </div>
+
+  <!-- ── CASE 1: DIVIDED CATEGORY SECTIONS (When on 'All' without active text search) ── -->
+  {% if sections and not query %}
+    {% for sec in sections %}
+      <section class="cb-category-section" id="section-{{ sec.id }}">
+        <!-- Section Header -->
+        <div class="cb-section-header">
+          <div>
+            <h2 class="cb-section-title">
+              <i class="bi {{ sec.icon }} text-accent"></i>
+              {{ sec.title }}
+            </h2>
+            <p class="cb-section-desc">{{ sec.subtitle }}</p>
+          </div>
+          <a href="{{ sec.view_all_url }}" class="cb-btn cb-btn-secondary cb-btn-sm" id="btn-see-all-{{ sec.id }}">
+            See All <i class="bi bi-chevron-right ms-1" style="font-size:0.75rem;"></i>
+          </a>
+        </div>
+
+        <!-- Section Movie Grid -->
+        <div class="cb-movies-grid">
+          {% for movie in sec.items %}
+            <div class="col">
+              <a href="{% url 'movie_details' movie.id %}" class="movie-card h-100" id="movie-card-{{ movie.id }}">
+                <div class="movie-card-poster-wrap">
+                  <!-- Category Badge Overlay -->
+                  <span class="cb-badge {{ sec.badge_class }} cb-card-category-badge">
+                    {{ sec.badge }}
+                  </span>
+
+                  {% if movie.poster_url %}
+                    <img
+                      src="{{ movie.poster_url }}"
+                      alt="{{ movie.title }} Poster"
+                      class="movie-card-poster"
+                      loading="lazy"
+                      onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                    />
+                    <div class="movie-card-poster-placeholder" style="display:none;">
+                      <i class="bi {{ sec.icon }}"></i>
+                    </div>
+                  {% else %}
+                    <div class="movie-card-poster-placeholder">
+                      <i class="bi {{ sec.icon }}"></i>
+                    </div>
+                  {% endif %}
+                </div>
+
+                <div class="movie-card-body">
+                  <h3 class="movie-card-title">{{ movie.title }}</h3>
+                  <div class="movie-card-meta">
+                    <span>{{ movie.genre }}</span> &bull;
+                    <span>{{ movie.language }}</span>
+                  </div>
+                  <div class="movie-card-meta text-secondary">
+                    <i class="bi bi-clock"></i> {{ movie.duration_display }}
+                  </div>
+                  <div class="mt-auto pt-2">
+                    <span class="cb-btn cb-btn-primary cb-btn-sm cb-btn-block cb-btn-book">
+                      Book Tickets <i class="bi bi-chevron-right ms-1" style="font-size:0.75rem;"></i>
+                    </span>
+                  </div>
+                </div>
+              </a>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+    {% endfor %}
+
+  <!-- ── CASE 2: FILTERED CATEGORY GRID OR SEARCH RESULTS ── -->
+  {% elif page_obj.object_list %}
+    <div class="cb-movies-grid mb-5" id="movies-grid">
+      {% for movie in page_obj.object_list %}
+        <div class="col">
+          <a href="{% url 'movie_details' movie.id %}" class="movie-card h-100" id="movie-card-{{ movie.id }}">
+            <div class="movie-card-poster-wrap">
+              <!-- Category Badge -->
+              {% if movie.category == 'concerts' %}
+                <span class="cb-badge cb-badge-warning cb-card-category-badge">Live Event</span>
+              {% elif movie.category == 'shows' %}
+                <span class="cb-badge cb-badge-success cb-card-category-badge">Stage / Comedy</span>
+              {% elif movie.category == 'streaming' %}
+                <span class="cb-badge cb-badge-accent cb-card-category-badge">Online Premiere</span>
+              {% else %}
+                <span class="cb-badge cb-badge-accent cb-card-category-badge">In Cinemas</span>
+              {% endif %}
+
+              {% if movie.poster_url %}
+                <img
+                  src="{{ movie.poster_url }}"
+                  alt="{{ movie.title }} Poster"
+                  class="movie-card-poster"
+                  loading="lazy"
+                  onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
+                />
+                <div class="movie-card-poster-placeholder" style="display:none;">
+                  <i class="bi bi-film"></i>
+                </div>
+              {% else %}
+                <div class="movie-card-poster-placeholder">
+                  <i class="bi bi-film"></i>
+                </div>
+              {% endif %}
+            </div>
+
+            <div class="movie-card-body">
+              <h2 class="movie-card-title">{{ movie.title }}</h2>
+              <div class="movie-card-meta">
+                <span>{{ movie.genre }}</span> &bull;
+                <span>{{ movie.language }}</span>
+              </div>
+              <div class="movie-card-meta text-secondary">
+                <i class="bi bi-clock"></i> {{ movie.duration_display }}
+              </div>
+              <div class="mt-auto pt-2">
+                <span class="cb-btn cb-btn-primary cb-btn-sm cb-btn-block cb-btn-book">
+                  Book Tickets <i class="bi bi-chevron-right ms-1" style="font-size:0.75rem;"></i>
+                </span>
+              </div>
+            </div>
+          </a>
+        </div>
+      {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    {% if page_obj.paginator.num_pages > 1 %}
+      <nav aria-label="Pagination" class="d-flex justify-content-center mb-5">
+        <ul class="pagination pagination-sm gap-1">
+          {% if page_obj.has_previous %}
+            <li class="page-item">
+              <a class="cb-btn cb-btn-secondary cb-btn-sm" href="?{% if active_category != 'all' %}category={{ active_category }}&{% endif %}{% if query %}q={{ query }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                &laquo; Prev
+              </a>
+            </li>
+          {% endif %}
+
+          {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+              <li class="page-item active">
+                <span class="cb-btn cb-btn-primary cb-btn-sm">{{ num }}</span>
+              </li>
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+              <li class="page-item">
+                <a class="cb-btn cb-btn-secondary cb-btn-sm" href="?{% if active_category != 'all' %}category={{ active_category }}&{% endif %}{% if query %}q={{ query }}&{% endif %}page={{ num }}">
+                  {{ num }}
+                </a>
+              </li>
+            {% endif %}
+          {% endfor %}
+
+          {% if page_obj.has_next %}
+            <li class="page-item">
+              <a class="cb-btn cb-btn-secondary cb-btn-sm" href="?{% if active_category != 'all' %}category={{ active_category }}&{% endif %}{% if query %}q={{ query }}&{% endif %}page={{ page_obj.next_page_number }}">
+                Next &raquo;
+              </a>
+            </li>
+          {% endif %}
+        </ul>
+      </nav>
+    {% endif %}
+
+  {% else %}
+    <!-- Empty State -->
+    <div class="cb-card text-center py-5 my-4">
+      <div class="display-5 text-secondary mb-3"><i class="bi bi-camera-reels"></i></div>
+      {% if query %}
+        <h3 class="h4 fw-bold">No movies found for “{{ query }}”</h3>
+        <p class="text-secondary mb-4">Try checking for typos or searching in another category.</p>
+        <a href="/" class="cb-btn cb-btn-primary">View All Categories</a>
+      {% else %}
+        <h3 class="h4 fw-bold">No items in this category currently</h3>
+        <p class="text-secondary mb-3">Check back soon for upcoming concerts, shows, and schedules!</p>
+        <a href="/" class="cb-btn cb-btn-secondary">Back to All</a>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

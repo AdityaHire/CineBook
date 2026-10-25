@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Review Booking — {{ movie.title }} — Cenebook{% endblock %}
+{% block meta_description %}Review your movie ticket order and seats before confirming your booking on Cenebook.{% endblock %}
+
+{% block content %}
+<div class="cb-container py-5" style="max-width: 720px;">
+
+  <!-- Header with Hold Countdown Timer -->
+  <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center gap-3 mb-4">
+    <div>
+      <h1 class="h3 fw-bold mb-1" style="letter-spacing:-0.02em;">Review Your Booking</h1>
+      <p class="text-secondary mb-0">Please verify your cinema showtime and seat selections</p>
+    </div>
+
+    <!-- Countdown Timer Badge -->
+    <div class="hold-timer-badge" id="hold-timer-badge">
+      <i class="bi bi-clock-history"></i>
+      <span>Seats held for</span>
+      <span
+        id="hold-timer-display"
+        data-expires-at="{{ expires_at }}"
+        data-server-time="{{ server_time }}"
+        data-show-id="{{ show.id }}"
+      >05:00</span>
+    </div>
+  </div>
+
+  <!-- Hold Expired Alert Banner (Hidden by default, shown by countdown.js on 00:00) -->
+  <div class="cb-alert cb-alert-danger mb-4" id="hold-expired-alert" style="display:none;" role="alert">
+    <i class="bi bi-clock-fill display-6 me-2"></i>
+    <div class="flex-grow-1">
+      <strong class="d-block">Your hold has expired!</strong>
+      <span>Your temporary reservation was released. Please pick your seats again to continue.</span>
+      <div class="mt-2">
+        <a href="{% url 'seat_selection' show.id %}" class="cb-btn cb-btn-primary cb-btn-sm">
+          <i class="bi bi-arrow-counterclockwise"></i> Choose Seats Again
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Booking Summary Card -->
+  <div class="summary-card" id="booking-summary-card">
+    <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
+      {% if movie.poster_url %}
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="table-poster-thumb" style="width:60px; height:85px; border-radius:8px;" onerror="this.style.display='none'" />
+      {% endif %}
+      <div>
+        <h2 class="h5 fw-bold mb-1">{{ movie.title }}</h2>
+        <div class="text-secondary" style="font-size:0.875rem;">
+          {{ movie.genre }} &bull; {{ movie.language }} &bull; {{ movie.duration_display }}
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Theatre</span>
+      <strong>{{ theatre.theatre_name }}</strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Screen</span>
+      <span>{{ screen.screen_name }}</span>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Date & Time</span>
+      <strong>{{ show.local_start|date:"D, d M Y · h:i A" }}</strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Selected Seats</span>
+      <div>
+        {% for h in holds %}
+          <span class="cb-badge cb-badge-accent me-1">{{ h.seat.label }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Ticket Price</span>
+      <span>Rs {{ ticket_price }} &times; {{ seats_count }}</span>
+    </div>
+
+    <div class="summary-row total-row">
+      <span>Total Amount</span>
+      <span class="text-accent" id="summary-total-amount">Rs {{ total_amount }}</span>
+    </div>
+
+    <!-- Simulated Payment Notice -->
+    <div class="p-3 bg-body-tertiary rounded mt-4 mb-4" style="font-size:0.875rem; border:1px solid var(--cb-border);">
+      <div class="d-flex align-items-center gap-2 mb-1 text-secondary">
+        <i class="bi bi-credit-card"></i>
+        <strong>Payment (Simulated)</strong>
+      </div>
+      <p class="text-secondary mb-0" style="font-size:0.8125rem;">
+        This is an educational demonstration project. No actual credit card charge or real monetary transaction will take place.
+      </p>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-2">
+      <a href="{% url 'seat_selection' show.id %}" class="cb-btn cb-btn-secondary" id="change-seats-btn">
+        <i class="bi bi-arrow-left"></i> Change Seats
+      </a>
+
+      <button
+        type="button"
+        class="cb-btn cb-btn-primary"
+        id="pay-button"
+        style="padding:0.75rem 1.75rem; font-size:1rem;"
+      >
+        <i class="bi bi-lock-fill me-1"></i> Pay Rs {{ total_amount }}
+      </button>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/countdown.js' %}"></script>
+<script src="{% static 'js/pay.js' %}"></script>
+{% endblock %}

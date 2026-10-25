@@ -1,0 +1,124 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Ticket {{ booking.booking_reference }} — {{ movie.title }} — Cenebook{% endblock %}
+{% block meta_description %}Cinema admission ticket for {{ movie.title }} at {{ theatre.theatre_name }}.{% endblock %}
+
+{% block content %}
+<div class="cb-container py-5" style="max-width: 680px;">
+
+  <!-- Breadcrumb Navigation -->
+  <nav aria-label="breadcrumb" class="mb-3 no-print">
+    <ol class="breadcrumb mb-0" style="font-size:0.875rem;">
+      <li class="breadcrumb-item"><a href="{% url 'my_bookings' %}" class="text-secondary"><i class="bi bi-arrow-left"></i> My Bookings</a></li>
+      <li class="breadcrumb-item active text-secondary" aria-current="page">{{ booking.booking_reference }}</li>
+    </ol>
+  </nav>
+
+  <!-- Printable Ticket Card -->
+  <div class="ticket-card" id="ticket-card">
+    <div class="ticket-header-strip">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-ticket-perforated"></i>
+        <span>{{ booking.booking_reference }}</span>
+      </div>
+      <div>
+        {% if booking.booking_status == 'confirmed' %}
+          <span class="badge bg-success">Confirmed</span>
+        {% else %}
+          <span class="badge bg-secondary">Cancelled</span>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- Movie & Screen Info -->
+    <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
+      {% if movie.poster_url %}
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="table-poster-thumb" style="width:70px; height:100px; border-radius:8px;" onerror="this.style.display='none'" />
+      {% endif %}
+      <div>
+        <h1 class="h4 fw-bold mb-1">{{ movie.title }}</h1>
+        <div class="text-secondary" style="font-size:0.875rem;">
+          {{ movie.genre }} &bull; {{ movie.language }} &bull; {{ movie.duration_display }}
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Cinema Venue</span>
+      <strong>{{ theatre.theatre_name }}</strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Auditorium</span>
+      <span>{{ screen.screen_name }}</span>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Screening Time</span>
+      <strong>{{ local_start|date:"D, d M Y · h:i A" }}</strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Reserved Seats</span>
+      <div>
+        {% for seat in seat_list %}
+          <span class="cb-badge cb-badge-accent me-1">{{ seat }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Customer Name</span>
+      <span>{{ booking.user.name }}</span>
+    </div>
+
+    <div class="summary-row total-row">
+      <span>Amount Paid</span>
+      <span class="text-accent">Rs {{ booking.total_amount }}</span>
+    </div>
+
+    {% if booking.booking_status == 'cancelled' %}
+      <div class="cb-alert cb-alert-warning mt-3 mb-0" role="alert">
+        <i class="bi bi-info-circle-fill"></i>
+        <div>
+          This booking was cancelled on {{ booking.cancelled_at|date:"d M Y, h:i A" }}.
+          Payment status: <strong>Refunded</strong>.
+        </div>
+      </div>
+    {% endif %}
+
+    <!-- Action Buttons (Hidden on Print) -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-4 border-top mt-4 no-print">
+      <div class="d-flex gap-2">
+        <button type="button" class="cb-btn cb-btn-secondary" onclick="window.print()">
+          <i class="bi bi-printer"></i> Print Ticket
+        </button>
+
+        {% if can_cancel %}
+          <button
+            type="button"
+            class="cb-btn cb-btn-secondary text-danger btn-cancel-booking"
+            id="btn-cancel-ticket"
+            data-reference="{{ booking.booking_reference }}"
+            data-amount="{{ booking.total_amount }}"
+          >
+            <i class="bi bi-x-circle"></i> Cancel Booking
+          </button>
+        {% endif %}
+      </div>
+
+      <a href="{% url 'my_bookings' %}" class="cb-btn cb-btn-secondary">
+        My Bookings
+      </a>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/cancel.js' %}"></script>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Access Denied — Cenebook{% endblock %}
+
+{% block content %}
+<div class="cb-error-page">
+  <div class="cb-error-code">403</div>
+  <h1 class="cb-error-title">You don't have permission to view this page.</h1>
+  <p class="cb-error-desc">If you think this is a mistake, try logging in with the right account.</p>
+  <a href="/" class="cb-btn cb-btn-primary" id="err403-home">
+    <i class="bi bi-house"></i> Back to Home
+  </a>
+</div>
+{% endblock %}

@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Booking Confirmed — {{ booking.booking_reference }} — Cenebook{% endblock %}
+{% block meta_description %}Your booking for {{ movie.title }} is confirmed. Booking ID: {{ booking.booking_reference }}.{% endblock %}
+
+{% block content %}
+<div class="cb-container py-5" style="max-width: 680px;">
+
+  <!-- Confirmation Moment Banner -->
+  <div class="text-center mb-4 no-print">
+    <div class="checkmark-wrapper mb-3">
+      <svg class="checkmark-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none"/>
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8"/>
+      </svg>
+    </div>
+    <h1 class="h3 fw-bold mb-1" style="letter-spacing:-0.02em;">Booking Confirmed!</h1>
+    <p class="text-secondary mb-0">
+      Your tickets have been reserved. Booking ID: <strong class="font-monospace text-accent">{{ booking.booking_reference }}</strong>
+    </p>
+  </div>
+
+  <!-- Printable Ticket Card -->
+  <div class="ticket-card" id="confirmation-ticket-card">
+    <div class="ticket-header-strip">
+      <div class="d-flex align-items-center gap-2">
+        <i class="bi bi-ticket-perforated"></i>
+        <span>{{ booking.booking_reference }}</span>
+      </div>
+      <div>
+        <span class="badge bg-success">Confirmed · Paid</span>
+      </div>
+    </div>
+
+    <!-- Movie & Screen Info -->
+    <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom">
+      {% if movie.poster_url %}
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="table-poster-thumb" style="width:70px; height:100px; border-radius:8px;" onerror="this.style.display='none'" />
+      {% endif %}
+      <div>
+        <h2 class="h4 fw-bold mb-1">{{ movie.title }}</h2>
+        <div class="text-secondary" style="font-size:0.875rem;">
+          {{ movie.genre }} &bull; {{ movie.language }} &bull; {{ movie.duration_display }}
+        </div>
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Cinema Venue</span>
+      <strong>{{ theatre.theatre_name }}</strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Auditorium</span>
+      <span>{{ screen.screen_name }}</span>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Screening Time</span>
+      <strong>{{ local_start|date:"D, d M Y · h:i A" }}</strong>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Reserved Seats</span>
+      <div>
+        {% for seat in seat_list %}
+          <span class="cb-badge cb-badge-accent me-1">{{ seat }}</span>
+        {% endfor %}
+      </div>
+    </div>
+
+    <div class="summary-row">
+      <span class="text-secondary">Customer Name</span>
+      <span>{{ booking.user.name }}</span>
+    </div>
+
+    <div class="summary-row total-row">
+      <span>Amount Paid</span>
+      <span class="text-accent">Rs {{ booking.total_amount }}</span>
+    </div>
+
+    <!-- Action Buttons (Hidden on Print) -->
+    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 pt-4 border-top mt-4 no-print">
+      <div class="d-flex gap-2">
+        <a href="{% url 'my_bookings' %}" class="cb-btn cb-btn-primary" id="btn-view-my-bookings">
+          <i class="bi bi-ticket-perforated"></i> View My Bookings
+        </a>
+        <button type="button" class="cb-btn cb-btn-secondary" onclick="window.print()">
+          <i class="bi bi-printer"></i> Print Ticket
+        </button>
+      </div>
+
+      <a href="/" class="cb-btn cb-btn-secondary">
+        Back to Home
+      </a>
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends "base_auth.html" %}
+{% load static %}
+
+{% block title %}Login — Cenebook{% endblock %}
+{% block meta_description %}Log in to your Cenebook account to book and manage movie tickets.{% endblock %}
+
+{% block auth_page %}
+<div class="cb-auth-page">
+  <div class="cb-auth-card">
+
+    <div class="cb-auth-logo">🎬 Cenebook</div>
+    <h1 class="cb-auth-title">Login</h1>
+
+    {% if form.non_field_errors %}
+      <div class="cb-alert cb-alert-danger" role="alert" id="login-error">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        {{ form.non_field_errors|join:", " }}
+      </div>
+    {% endif %}
+
+    <form method="post" action="/login/{% if next %}?next={{ next }}{% endif %}" novalidate id="login-form">
+      {% csrf_token %}
+      {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+
+      <!-- Email -->
+      <div class="cb-form-group">
+        <label class="cb-label" for="id_login_email">Email</label>
+        <input
+          type="email"
+          name="email"
+          id="id_login_email"
+          class="cb-input{% if form.email.errors %} is-invalid{% endif %}"
+          placeholder="you@example.com"
+          value="{{ form.email.value|default:'' }}"
+          autocomplete="email"
+          autofocus
+          required
+        />
+        {% if form.email.errors %}
+          <p class="cb-error-text">{{ form.email.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Password -->
+      <div class="cb-form-group">
+        <label class="cb-label" for="id_login_password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="id_login_password"
+          class="cb-input{% if form.password.errors %} is-invalid{% endif %}"
+          placeholder="Your password"
+          autocomplete="current-password"
+          required
+        />
+        {% if form.password.errors %}
+          <p class="cb-error-text">{{ form.password.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="cb-btn cb-btn-primary cb-btn-block" id="btn-login">
+        <i class="bi bi-box-arrow-in-right"></i> Login
+      </button>
+    </form>
+
+    <p class="cb-auth-footer">
+      New here? <a href="/register/">Create an account</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

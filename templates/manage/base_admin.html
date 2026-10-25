@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Panel — Cenebook{% endblock %}
+
+{% block content %}
+<div class="cb-admin-container py-4">
+  <div class="cb-admin-layout">
+
+    <!-- Admin Sidebar -->
+    <aside class="cb-admin-sidebar">
+      <div class="px-2 pb-2 mb-2 border-bottom text-secondary" style="font-size:0.75rem; font-weight:700; text-transform:uppercase; letter-spacing:0.05em;">
+        Cinema Management
+      </div>
+      <nav class="d-flex flex-column">
+        <a href="{% url 'admin_dashboard' %}" class="cb-admin-nav-item {% if active_tab == 'dashboard' %}active{% endif %}" id="admin-nav-dashboard">
+          <i class="bi bi-grid-1x2"></i> Dashboard
+        </a>
+        <a href="{% url 'admin_movie_list' %}" class="cb-admin-nav-item {% if active_tab == 'movies' %}active{% endif %}" id="admin-nav-movies">
+          <i class="bi bi-film"></i> Movies
+        </a>
+        <a href="{% url 'admin_theatre_list' %}" class="cb-admin-nav-item {% if active_tab == 'theatres' %}active{% endif %}" id="admin-nav-theatres">
+          <i class="bi bi-building"></i> Theatres & Screens
+        </a>
+        <a href="{% url 'admin_show_list' %}" class="cb-admin-nav-item {% if active_tab == 'shows' %}active{% endif %}" id="admin-nav-shows">
+          <i class="bi bi-calendar-event"></i> Shows
+        </a>
+        <a href="{% url 'admin_booking_list' %}" class="cb-admin-nav-item {% if active_tab == 'bookings' %}active{% endif %}" id="admin-nav-bookings">
+          <i class="bi bi-ticket-detailed"></i> Bookings
+        </a>
+
+        <div class="my-3 border-top"></div>
+
+        <a href="/" class="cb-admin-nav-item" id="admin-nav-site">
+          <i class="bi bi-box-arrow-up-right"></i> View Live Site
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Admin Main Body -->
+    <section class="cb-admin-content">
+      {% block admin_content %}{% endblock %}
+    </section>
+
+  </div>
+</div>
+{% endblock %}

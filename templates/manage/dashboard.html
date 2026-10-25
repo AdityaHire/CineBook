@@ -1,0 +1,156 @@
+{% extends "manage/base_admin.html" %}
+
+{% block title %}Dashboard — Cenebook Admin{% endblock %}
+
+{% block admin_content %}
+<div>
+  <!-- Header -->
+  <div class="cb-admin-header">
+    <div>
+      <h1 class="cb-admin-title">Dashboard</h1>
+      <p class="text-secondary mb-0">Overview of movies, bookings, revenue, and theatre screenings</p>
+    </div>
+    <div class="d-flex gap-2">
+      <a href="{% url 'admin_movie_create' %}" class="cb-btn cb-btn-secondary cb-btn-sm" id="btn-quick-add-movie">
+        <i class="bi bi-plus-lg"></i> Add Movie
+      </a>
+      <a href="{% url 'admin_show_create' %}" class="cb-btn cb-btn-primary cb-btn-sm" id="btn-quick-add-show">
+        <i class="bi bi-calendar-plus"></i> Schedule Show
+      </a>
+    </div>
+  </div>
+
+  <!-- 4 Stat Metrics Matching Section 7.1 -->
+  <div class="cb-stats-grid">
+    <div class="cb-stat-card">
+      <div class="cb-stat-label"><i class="bi bi-film me-1 text-accent"></i> Movies (Now Showing)</div>
+      <div class="cb-stat-value" id="stat-movies-count">{{ movies_count }}</div>
+    </div>
+    <div class="cb-stat-card">
+      <div class="cb-stat-label"><i class="bi bi-calendar-check me-1 text-accent"></i> Upcoming Shows</div>
+      <div class="cb-stat-value" id="stat-shows-count">{{ upcoming_shows_count }}</div>
+    </div>
+    <div class="cb-stat-card">
+      <div class="cb-stat-label"><i class="bi bi-ticket-perforated me-1 text-accent"></i> Bookings Today</div>
+      <div class="cb-stat-value" id="stat-bookings-count">{{ bookings_today }}</div>
+    </div>
+    <div class="cb-stat-card">
+      <div class="cb-stat-label"><i class="bi bi-currency-rupee me-1 text-accent"></i> Revenue Today</div>
+      <div class="cb-stat-value text-accent" id="stat-revenue-count">Rs {{ revenue_today }}</div>
+    </div>
+  </div>
+
+  <!-- Recent Bookings Table -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 fw-bold mb-0">Recent Customer Bookings</h2>
+    <a href="{% url 'admin_booking_list' %}" class="text-secondary" style="font-size:0.875rem;">View all bookings &rarr;</a>
+  </div>
+
+  <div class="cb-table-card mb-5">
+    <div class="table-responsive">
+      <table class="cb-table" id="dashboard-bookings-table">
+        <thead>
+          <tr>
+            <th>Booking ID</th>
+            <th>Customer</th>
+            <th>Movie &bull; Showtime</th>
+            <th>Seats</th>
+            <th>Total</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if recent_bookings %}
+            {% for b in recent_bookings %}
+              <tr>
+                <td class="fw-bold font-monospace">
+                  <a href="/bookings/{{ b.booking_reference }}/">{{ b.booking_reference }}</a>
+                </td>
+                <td>
+                  <div>{{ b.user.name }}</div>
+                  <div class="text-secondary" style="font-size:0.75rem;">{{ b.user.email }}</div>
+                </td>
+                <td>
+                  <div class="fw-medium">{{ b.show.movie.title }}</div>
+                  <div class="text-secondary" style="font-size:0.75rem;">{{ b.show.local_start|date:"d M, h:i A" }}</div>
+                </td>
+                <td>{{ b.seat_labels }}</td>
+                <td><strong>Rs {{ b.total_amount }}</strong></td>
+                <td>
+                  {% if b.booking_status == 'confirmed' %}
+                    <span class="cb-badge cb-badge-success">Confirmed</span>
+                  {% else %}
+                    <span class="cb-badge cb-badge-muted">Cancelled</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-4 text-secondary">
+                No bookings recorded yet. New customer reservations will appear here.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Upcoming Screenings -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="h5 fw-bold mb-0">Upcoming Screenings</h2>
+    <a href="{% url 'admin_show_list' %}" class="text-secondary" style="font-size:0.875rem;">View all shows &rarr;</a>
+  </div>
+
+  <div class="cb-table-card">
+    <div class="table-responsive">
+      <table class="cb-table" id="dashboard-shows-table">
+        <thead>
+          <tr>
+            <th>Movie</th>
+            <th>Theatre / Screen</th>
+            <th>Local Time</th>
+            <th>Price</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if recent_shows %}
+            {% for show in recent_shows %}
+              <tr>
+                <td class="fw-semibold">
+                  <a href="{% url 'admin_show_edit' show.id %}">{{ show.movie.title }}</a>
+                </td>
+                <td class="text-secondary">
+                  {{ show.screen.theatre.theatre_name }} &bull; {{ show.screen.screen_name }}
+                </td>
+                <td>
+                  <span class="fw-medium">{{ show.local_start|date:"d M Y, h:i A" }}</span>
+                </td>
+                <td>Rs {{ show.ticket_price }}</td>
+                <td>
+                  <span class="cb-badge cb-badge-success">Scheduled</span>
+                </td>
+                <td class="text-end">
+                  <a href="{% url 'admin_show_edit' show.id %}" class="cb-btn cb-btn-secondary cb-btn-sm py-1 px-2" title="Edit show">
+                    <i class="bi bi-pencil"></i>
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="6" class="text-center py-4 text-secondary">
+                No upcoming shows scheduled. Click “Schedule Show” to add one.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

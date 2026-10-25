@@ -1,0 +1,1902 @@
+/* ============================================================
+   Cenebook — site.css
+   Apple Design System (WWDC Fluid Interfaces & Human Interface Guidelines)
+   ============================================================ */
+
+/* --- Google Font fallback & Inter --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* ============================================================
+   1. DESIGN TOKENS (Light Mode)
+   ============================================================ */
+:root {
+  /* Colors — Apple iOS / macOS System Palette */
+  --cb-accent:          #0071E3;
+  --cb-accent-hover:    #0077ED;
+  --cb-accent-active:   #005bb5;
+  --cb-accent-tint:     rgba(0, 113, 227, 0.10);
+  --cb-accent-glow:     rgba(0, 113, 227, 0.35);
+
+  --cb-success:         #30D158;
+  --cb-success-tint:    rgba(48, 209, 88, 0.12);
+  --cb-warning:         #FF9F0A;
+  --cb-warning-tint:    rgba(255, 159, 10, 0.14);
+  --cb-danger:          #FF453A;
+  --cb-danger-tint:     rgba(255, 69, 58, 0.12);
+
+  --cb-text:            #1D1D1F;
+  --cb-text-secondary:  #6E6E73;
+  --cb-text-tertiary:   #86868B;
+
+  /* Surfaces & Backgrounds */
+  --cb-bg:              #F5F5F7;
+  --cb-surface:         #FFFFFF;
+  --cb-surface-2:       #E8E8ED;
+  --cb-surface-elevated:#FFFFFF;
+  --cb-border:          rgba(0, 0, 0, 0.08);
+  --cb-border-subtle:   rgba(0, 0, 0, 0.04);
+  --cb-card-border:     rgba(0, 0, 0, 0.06);
+
+  /* Translucent Frosted Glass Materials */
+  --cb-appbar-bg:       rgba(245, 245, 247, 0.82);
+  --cb-appbar-border:   rgba(0, 0, 0, 0.07);
+  --cb-sheet-bg:        rgba(255, 255, 255, 0.85);
+  --cb-glass-border:    rgba(255, 255, 255, 0.60);
+  --cb-glass-specular:  inset 0 1px 0 rgba(255, 255, 255, 0.9);
+
+  /* Typography — Apple SF Pro font hierarchy */
+  --cb-font:            -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "SF Pro", "Inter", -apple-system-subheadline, "Helvetica Neue", "Segoe UI", Arial, sans-serif;
+  --cb-font-mono:       ui-monospace, "SF Mono", Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Shapes & Radii */
+  --cb-radius-sm:       8px;
+  --cb-radius-btn:      11px;
+  --cb-radius-card:     18px;
+  --cb-radius-hero:     22px;
+  --cb-radius-sheet:    24px;
+  --cb-radius-pill:     9999px;
+
+  /* Elevation & Shadows */
+  --cb-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 2px rgba(0, 0, 0, 0.02);
+  --cb-shadow-md:       0 6px 18px rgba(0, 0, 0, 0.06), 0 2px 6px rgba(0, 0, 0, 0.03);
+  --cb-shadow-lg:       0 14px 34px rgba(0, 0, 0, 0.09), 0 4px 10px rgba(0, 0, 0, 0.04);
+  --cb-shadow-hover:    0 16px 36px rgba(0, 0, 0, 0.11), 0 3px 8px rgba(0, 0, 0, 0.04);
+  --cb-shadow-float:    0 20px 48px -8px rgba(0, 0, 0, 0.18), 0 1px 2px rgba(0, 0, 0, 0.06);
+
+  /* Apple Spring Physics Timing Curves */
+  --cb-spring-crit:     cubic-bezier(0.16, 1, 0.3, 1);    /* critically damped: smooth settle, no bounce */
+  --cb-spring-bounce:   cubic-bezier(0.34, 1.56, 0.64, 1);  /* subtle tactile overshoot pop */
+  --cb-press-down:      cubic-bezier(0.2, 0, 0, 1);        /* instant response on pointer-down */
+
+  /* Spacing base: 8px grid */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+}
+
+/* ============================================================
+   2. DARK MODE TOKENS (OLED Deep Pure Black)
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --cb-accent:          #2997FF;
+    --cb-accent-hover:    #409CFF;
+    --cb-accent-active:   #1A7EE5;
+    --cb-accent-tint:     rgba(41, 151, 255, 0.15);
+    --cb-accent-glow:     rgba(41, 151, 255, 0.45);
+
+    --cb-success:         #30D158;
+    --cb-success-tint:    rgba(48, 209, 88, 0.18);
+    --cb-warning:         #FF9F0A;
+    --cb-warning-tint:    rgba(255, 159, 10, 0.18);
+    --cb-danger:          #FF453A;
+    --cb-danger-tint:     rgba(255, 69, 58, 0.18);
+
+    --cb-text:            #F5F5F7;
+    --cb-text-secondary:  #A1A1A6;
+    --cb-text-tertiary:   #86868B;
+
+    --cb-bg:              #000000;
+    --cb-surface:         #1C1C1E;
+    --cb-surface-2:       #2C2C2E;
+    --cb-surface-elevated:#242426;
+    --cb-border:          rgba(255, 255, 255, 0.10);
+    --cb-border-subtle:   rgba(255, 255, 255, 0.05);
+    --cb-card-border:     rgba(255, 255, 255, 0.08);
+
+    --cb-appbar-bg:       rgba(20, 20, 22, 0.78);
+    --cb-appbar-border:   rgba(255, 255, 255, 0.09);
+    --cb-sheet-bg:        rgba(28, 28, 30, 0.85);
+    --cb-glass-border:    rgba(255, 255, 255, 0.12);
+    --cb-glass-specular:  inset 0 1px 0 rgba(255, 255, 255, 0.12);
+
+    --cb-shadow-sm:       0 2px 8px rgba(0, 0, 0, 0.45);
+    --cb-shadow-md:       0 6px 20px rgba(0, 0, 0, 0.65);
+    --cb-shadow-lg:       0 16px 44px rgba(0, 0, 0, 0.85);
+    --cb-shadow-hover:    0 18px 46px rgba(0, 0, 0, 0.90);
+    --cb-shadow-float:    0 24px 60px -8px rgba(0, 0, 0, 0.95), inset 0 1px 0 rgba(255, 255, 255, 0.14);
+  }
+}
+
+/* ============================================================
+   3. BASE RESET & GLOBALS
+   ============================================================ */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-family: var(--cb-font);
+  color: var(--cb-text);
+  background: var(--cb-bg);
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-optical-sizing: auto;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--cb-bg);
+  color: var(--cb-text);
+  font-size: 1rem;
+  line-height: 1.52;
+  letter-spacing: -0.006em;
+  transition: background 0.3s ease, color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+main { flex: 1; }
+
+a {
+  color: var(--cb-accent);
+  text-decoration: none;
+  transition: color 0.15s ease, opacity 0.15s ease;
+}
+a:hover {
+  text-decoration: none;
+  opacity: 0.88;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* ============================================================
+   4. NAVIGATION BAR (Translucent Frosted Chrome)
+   ============================================================ */
+.cb-appbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: var(--cb-appbar-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border-bottom: 1px solid var(--cb-appbar-border);
+  padding: 0.75rem 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: box-shadow 0.25s var(--cb-spring-crit), border-color 0.2s ease;
+}
+
+.cb-appbar.scrolled {
+  box-shadow: var(--cb-shadow-sm);
+  border-bottom-color: var(--cb-border);
+}
+
+@supports not (backdrop-filter: blur(1px)) {
+  .cb-appbar { background: var(--cb-surface); }
+}
+
+.cb-appbar-brand {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--cb-text);
+  letter-spacing: -0.025em;
+  text-decoration: none;
+  white-space: nowrap;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: transform 90ms var(--cb-press-down), opacity 0.15s ease;
+}
+.cb-appbar-brand:active {
+  transform: scale(0.96);
+}
+.cb-appbar-brand:hover {
+  text-decoration: none;
+  color: var(--cb-accent);
+}
+
+.cb-appbar-search {
+  flex: 1;
+  max-width: 360px;
+}
+.cb-appbar-search input {
+  width: 100%;
+  border-radius: var(--cb-radius-pill);
+  border: 1px solid var(--cb-border);
+  background: var(--cb-surface-2);
+  color: var(--cb-text);
+  padding: 0.45rem 1.1rem;
+  font-size: 0.9375rem;
+  letter-spacing: -0.01em;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.cb-appbar-search input::placeholder {
+  color: var(--cb-text-tertiary);
+}
+.cb-appbar-search input:focus {
+  outline: none;
+  border-color: var(--cb-accent);
+  background: var(--cb-surface);
+  box-shadow: 0 0 0 3.5px var(--cb-accent-tint);
+}
+
+.cb-appbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-left: auto;
+  white-space: nowrap;
+}
+.cb-appbar-nav a {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--cb-text);
+  letter-spacing: -0.01em;
+  transition: color 0.15s ease, transform 90ms var(--cb-press-down);
+}
+.cb-appbar-nav a:active {
+  transform: scale(0.95);
+}
+.cb-appbar-nav a:hover {
+  color: var(--cb-accent);
+  text-decoration: none;
+}
+
+.cb-nav-user {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--cb-text-secondary);
+}
+
+/* ============================================================
+   5. BUTTONS (Physical Response on Pointer-Down)
+   ============================================================ */
+.cb-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
+  padding: 0.58rem 1.25rem;
+  border-radius: var(--cb-radius-btn);
+  border: none;
+  font-family: var(--cb-font);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  cursor: pointer;
+  transition: transform 0.25s var(--cb-spring-crit), background 0.15s ease, box-shadow 0.25s var(--cb-spring-crit), opacity 0.15s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  position: relative;
+}
+
+/* Instant response on pointer-down (Apple Guideline §1) */
+.cb-btn:active {
+  transform: scale(0.965);
+  transition: transform 70ms var(--cb-press-down);
+}
+
+.cb-btn-primary {
+  background: var(--cb-accent);
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px var(--cb-accent-tint);
+}
+.cb-btn-primary:hover {
+  background: var(--cb-accent-hover);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px var(--cb-accent-glow);
+  text-decoration: none;
+}
+.cb-btn-primary:active {
+  background: var(--cb-accent-active);
+}
+.cb-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.cb-btn-secondary {
+  background: var(--cb-surface-2);
+  color: var(--cb-text);
+  border: 1px solid var(--cb-border-subtle);
+}
+.cb-btn-secondary:hover {
+  background: var(--cb-surface);
+  color: var(--cb-text);
+  border-color: var(--cb-border);
+  box-shadow: var(--cb-shadow-sm);
+  text-decoration: none;
+}
+
+.cb-btn-danger {
+  background: var(--cb-danger);
+  color: #FFFFFF;
+  box-shadow: 0 2px 6px var(--cb-danger-tint);
+}
+.cb-btn-danger:hover {
+  opacity: 0.92;
+  box-shadow: 0 4px 14px rgba(255, 69, 58, 0.35);
+  color: #FFFFFF;
+  text-decoration: none;
+}
+
+.cb-btn-outline {
+  background: transparent;
+  color: var(--cb-accent);
+  border: 1.5px solid var(--cb-accent);
+}
+.cb-btn-outline:hover {
+  background: var(--cb-accent-tint);
+  color: var(--cb-accent);
+  text-decoration: none;
+}
+
+.cb-btn-sm {
+  padding: 0.38rem 0.95rem;
+  font-size: 0.875rem;
+  border-radius: var(--cb-radius-btn);
+}
+
+.cb-btn-pill {
+  border-radius: var(--cb-radius-pill);
+}
+
+.cb-btn-block {
+  width: 100%;
+}
+
+/* ============================================================
+   6. FORM INPUTS & LABELS
+   ============================================================ */
+.cb-form-group {
+  margin-bottom: 1.25rem;
+}
+
+.cb-label {
+  display: block;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.4rem;
+  color: var(--cb-text);
+}
+
+.cb-input {
+  width: 100%;
+  padding: 0.65rem 0.95rem;
+  border-radius: var(--cb-radius-btn);
+  border: 1.5px solid var(--cb-border);
+  background: var(--cb-surface);
+  color: var(--cb-text);
+  font-family: var(--cb-font);
+  font-size: 1rem;
+  letter-spacing: -0.01em;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+.cb-input::placeholder {
+  color: var(--cb-text-tertiary);
+}
+.cb-input:focus {
+  outline: none;
+  border-color: var(--cb-accent);
+  box-shadow: 0 0 0 3.5px var(--cb-accent-tint);
+  background: var(--cb-surface-elevated);
+}
+.cb-input.is-invalid {
+  border-color: var(--cb-danger);
+}
+.cb-input.is-invalid:focus {
+  box-shadow: 0 0 0 3.5px var(--cb-danger-tint);
+}
+
+.cb-error-text {
+  font-size: 0.875rem;
+  color: var(--cb-danger);
+  margin-top: 0.35rem;
+  font-weight: 500;
+}
+
+/* ============================================================
+   7. CARDS (Apple Specular Depth & Elevation)
+   ============================================================ */
+.cb-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-sm);
+  padding: 1.6rem;
+  transition: box-shadow 0.3s var(--cb-spring-crit), transform 90ms var(--cb-press-down);
+  position: relative;
+}
+.cb-card:active {
+  transform: scale(0.99);
+}
+.cb-card-hover:hover {
+  box-shadow: var(--cb-shadow-md);
+  transform: translateY(-2px);
+}
+
+/* ============================================================
+   8. BALANCED MOVIE GRID & APPLE TV-STYLE MOVIE CARD
+   ============================================================ */
+/* Fluid auto-fit grid so items never look lopsided or stranded */
+.cb-movies-grid,
+#movies-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)) !important;
+  gap: 1.5rem !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+.cb-movies-grid > .col,
+#movies-grid > .col {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 !important;
+}
+
+.movie-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-sm);
+  overflow: hidden;
+  cursor: pointer;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.35s var(--cb-spring-crit), box-shadow 0.35s var(--cb-spring-crit), border-color 0.2s ease;
+  position: relative;
+}
+
+.movie-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--cb-shadow-hover);
+  border-color: var(--cb-border);
+  text-decoration: none;
+}
+
+/* Instant depression on touch/click */
+.movie-card:active {
+  transform: scale(0.975);
+  transition: transform 70ms var(--cb-press-down);
+}
+
+.movie-card-poster-wrap {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 2/3;
+  width: 100%;
+  background: var(--cb-surface-2);
+}
+
+.movie-card-poster {
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  width: 100%;
+  height: 100%;
+  background: var(--cb-surface-2);
+  transition: transform 0.45s var(--cb-spring-crit);
+}
+
+.movie-card:hover .movie-card-poster {
+  transform: scale(1.045);
+}
+
+.movie-card-poster-placeholder {
+  aspect-ratio: 2/3;
+  width: 100%;
+  background: linear-gradient(135deg, var(--cb-surface-2) 0%, var(--cb-surface) 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cb-text-tertiary);
+  font-size: 3rem;
+}
+
+.movie-card-body {
+  padding: 1.1rem 1rem 1rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.movie-card-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--cb-text);
+  line-height: 1.25;
+  letter-spacing: -0.018em;
+  margin: 0;
+}
+
+.movie-card-meta {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--cb-text-secondary);
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   9. ALERTS & NOTIFICATIONS
+   ============================================================ */
+.cb-alert {
+  padding: 0.85rem 1.25rem;
+  border-radius: var(--cb-radius-btn);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin-bottom: 1.25rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: var(--cb-shadow-sm);
+  animation: cb-alert-in 0.3s var(--cb-spring-crit);
+}
+
+@keyframes cb-alert-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.cb-alert-success {
+  background: var(--cb-success-tint);
+  color: var(--cb-success);
+  border: 1px solid rgba(48, 209, 88, 0.30);
+}
+.cb-alert-warning {
+  background: var(--cb-warning-tint);
+  color: var(--cb-warning);
+  border: 1px solid rgba(255, 159, 10, 0.30);
+}
+.cb-alert-danger {
+  background: var(--cb-danger-tint);
+  color: var(--cb-danger);
+  border: 1px solid rgba(255, 69, 58, 0.30);
+}
+.cb-alert-info {
+  background: var(--cb-accent-tint);
+  color: var(--cb-accent);
+  border: 1px solid rgba(0, 113, 227, 0.25);
+}
+
+/* ============================================================
+   10. AUTHENTICATION PAGES
+   ============================================================ */
+.cb-auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1rem;
+  background: var(--cb-bg);
+}
+
+.cb-auth-card {
+  width: 100%;
+  max-width: 440px;
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-hero);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-lg);
+  padding: 2.75rem 2.5rem;
+}
+
+.cb-auth-logo {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--cb-accent);
+  letter-spacing: -0.025em;
+  text-align: center;
+  margin-bottom: 0.3rem;
+}
+
+.cb-auth-title {
+  font-size: 1.55rem;
+  font-weight: 700;
+  color: var(--cb-text);
+  text-align: center;
+  margin-bottom: 1.85rem;
+  letter-spacing: -0.022em;
+}
+
+.cb-auth-footer {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--cb-text-secondary);
+  margin-top: 1.5rem;
+}
+
+/* ============================================================
+   11. BADGES & STATUS PILLS
+   ============================================================ */
+.cb-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.25rem 0.68rem;
+  border-radius: var(--cb-radius-pill);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  user-select: none;
+  transition: transform 90ms var(--cb-press-down);
+}
+.cb-badge-success { background: var(--cb-success-tint); color: var(--cb-success); }
+.cb-badge-danger  { background: var(--cb-danger-tint); color: var(--cb-danger); }
+.cb-badge-warning { background: var(--cb-warning-tint); color: var(--cb-warning); }
+.cb-badge-muted   { background: var(--cb-surface-2); color: var(--cb-text-secondary); }
+.cb-badge-accent  { background: var(--cb-accent-tint); color: var(--cb-accent); }
+
+/* ============================================================
+   12. FOOTER (Refined Minimalist Apple Aesthetic)
+   ============================================================ */
+.cb-footer {
+  text-align: center;
+  font-size: 0.8125rem;
+  color: var(--cb-text-secondary);
+  padding: 2.25rem 1rem;
+  border-top: 1px solid var(--cb-border);
+  margin-top: auto;
+  letter-spacing: -0.005em;
+}
+.cb-footer p {
+  margin: 0;
+  opacity: 0.85;
+}
+
+/* ============================================================
+   13. UTILITY & CONTAINER
+   ============================================================ */
+.text-secondary { color: var(--cb-text-secondary) !important; }
+.text-accent    { color: var(--cb-accent) !important; }
+.text-danger    { color: var(--cb-danger) !important; }
+.text-success   { color: var(--cb-success) !important; }
+
+.cb-divider {
+  border: none;
+  border-top: 1px solid var(--cb-border);
+  margin: 1.5rem 0;
+}
+
+.cb-container {
+  width: 100%;
+  max-width: 1220px;
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+/* ============================================================
+   14. MOVIE DETAILS & HERO (Cinematic Translucent Backdrop)
+   ============================================================ */
+.movie-hero {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-hero);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-md);
+  padding: 2.25rem;
+  margin-bottom: 2.25rem;
+  display: flex;
+  gap: 2.5rem;
+  align-items: flex-start;
+  position: relative;
+  overflow: hidden;
+}
+
+.movie-hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 160px;
+  background: linear-gradient(180deg, var(--cb-accent-tint) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .movie-hero {
+    flex-direction: column;
+    padding: 1.5rem;
+    gap: 1.5rem;
+  }
+}
+
+.movie-hero-poster {
+  width: 230px;
+  flex-shrink: 0;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--cb-border);
+  position: relative;
+}
+
+@media (max-width: 768px) {
+  .movie-hero-poster {
+    width: 100%;
+    max-width: 230px;
+    margin: 0 auto;
+  }
+}
+
+.movie-hero-poster img {
+  width: 100%;
+  aspect-ratio: 2/3;
+  object-fit: cover;
+  display: block;
+}
+
+.movie-hero-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  position: relative;
+  z-index: 1;
+}
+
+.movie-hero-title {
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin: 0;
+  color: var(--cb-text);
+  line-height: 1.15;
+}
+
+.movie-meta-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  align-items: center;
+  margin: 0.35rem 0;
+}
+
+.movie-meta-pill {
+  background: var(--cb-surface-2);
+  color: var(--cb-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--cb-radius-pill);
+  border: 1px solid var(--cb-border-subtle);
+  display: inline-flex;
+  align-items: center;
+}
+
+.movie-hero-desc {
+  color: var(--cb-text-secondary);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-top: 0.5rem;
+  letter-spacing: -0.008em;
+}
+
+/* ============================================================
+   15. DATE SELECTOR CHIPS & SHOWTIME BUTTONS
+   ============================================================ */
+.date-chips-scroller {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.35rem 0.25rem 0.85rem;
+  margin-bottom: 1.5rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.date-chips-scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.date-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 0.7rem 1.35rem;
+  background: var(--cb-surface);
+  border: 1.5px solid var(--cb-border);
+  border-radius: 14px;
+  text-decoration: none;
+  color: var(--cb-text);
+  min-width: 86px;
+  cursor: pointer;
+  scroll-snap-align: start;
+  transition: transform 0.25s var(--cb-spring-crit), background 0.15s ease, border-color 0.15s ease, box-shadow 0.25s var(--cb-spring-crit);
+  user-select: none;
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.date-chip:active {
+  transform: scale(0.94);
+  transition: transform 70ms var(--cb-press-down);
+}
+
+.date-chip:hover {
+  border-color: var(--cb-accent);
+  color: var(--cb-accent);
+  text-decoration: none;
+  transform: translateY(-2px);
+}
+
+.date-chip.active {
+  background: var(--cb-accent);
+  border-color: var(--cb-accent);
+  color: #FFFFFF !important;
+  box-shadow: 0 6px 18px var(--cb-accent-glow);
+  transform: translateY(-2px);
+}
+
+.date-chip-day {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  opacity: 0.85;
+}
+
+.date-chip-date {
+  font-size: 1.15rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+}
+
+/* Theatre Section Card */
+.theatre-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  padding: 1.6rem;
+  margin-bottom: 1.5rem;
+  box-shadow: var(--cb-shadow-sm);
+  border: 1px solid var(--cb-card-border);
+}
+
+.theatre-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.1rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--cb-border);
+}
+
+.theatre-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--cb-text);
+  margin: 0;
+}
+
+.theatre-loc {
+  font-size: 0.875rem;
+  color: var(--cb-text-secondary);
+  margin-top: 0.2rem;
+}
+
+.showtimes-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.85rem;
+}
+
+.showtime-btn {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.65rem 1.15rem;
+  background: var(--cb-surface-2);
+  border: 1.5px solid var(--cb-border);
+  border-radius: var(--cb-radius-btn);
+  text-decoration: none;
+  color: var(--cb-text);
+  cursor: pointer;
+  transition: transform 0.25s var(--cb-spring-crit), background 0.15s ease, border-color 0.15s ease, box-shadow 0.25s var(--cb-spring-crit);
+  min-width: 116px;
+  user-select: none;
+}
+
+.showtime-btn:active:not(:disabled) {
+  transform: scale(0.95);
+  transition: transform 70ms var(--cb-press-down);
+}
+
+.showtime-btn:hover:not(:disabled) {
+  border-color: var(--cb-accent);
+  background: var(--cb-accent-tint);
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: var(--cb-shadow-sm);
+}
+
+.showtime-btn.disabled,
+.showtime-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+  background: var(--cb-surface);
+}
+
+.showtime-time {
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.015em;
+}
+
+.showtime-meta {
+  font-size: 0.75rem;
+  color: var(--cb-text-secondary);
+  margin-top: 0.2rem;
+}
+
+.showtime-status {
+  font-size: 0.72rem;
+  font-weight: 700;
+  margin-top: 0.25rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.showtime-status.available { color: var(--cb-success); }
+.showtime-status.filling_fast { color: var(--cb-warning); }
+.showtime-status.sold_out { color: var(--cb-danger); }
+.showtime-status.closed { color: var(--cb-text-secondary); }
+
+/* ============================================================
+   16. SEAT MAP & IMAX CURVED CINEMA SCREEN (Vibrant Projector Glow)
+   ============================================================ */
+.seat-map-wrapper {
+  position: relative;
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-hero);
+  padding: 2.5rem 1.5rem 7rem;
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-sm);
+  overflow: hidden;
+  user-select: none;
+}
+
+.seat-map-scroll-area {
+  overflow: auto;
+  max-width: 100%;
+  padding: 1.75rem 0.5rem;
+  touch-action: none; /* Pointer-events direct manipulation */
+  cursor: grab;
+}
+.seat-map-scroll-area:active {
+  cursor: grabbing;
+}
+
+.seat-map-canvas {
+  display: inline-block;
+  min-width: 100%;
+  text-align: center;
+  transform-origin: top center;
+  transition: transform 0.25s var(--cb-spring-crit);
+}
+
+/* Luminous IMAX Curved Screen Graphic */
+.cinema-screen-container {
+  max-width: 580px;
+  margin: 0 auto 3.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.cinema-screen {
+  height: 8px;
+  width: 100%;
+  background: linear-gradient(90deg, rgba(0, 113, 227, 0.2) 0%, #0071E3 25%, #409CFF 50%, #0071E3 75%, rgba(0, 113, 227, 0.2) 100%);
+  border-radius: 50% / 100% 100% 0 0;
+  box-shadow: 0 16px 45px rgba(0, 113, 227, 0.55), 0 0 25px rgba(0, 113, 227, 0.35);
+  margin-bottom: 0.85rem;
+  position: relative;
+}
+
+/* Realistic downward projector light aura */
+.cinema-screen::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 5%;
+  right: 5%;
+  height: 50px;
+  background: radial-gradient(ellipse at top, rgba(0, 113, 227, 0.28) 0%, transparent 72%);
+  pointer-events: none;
+}
+
+.cinema-screen-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--cb-text-secondary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+/* Seat Grid */
+.seat-grid {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0 auto;
+}
+
+.seat-row {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  justify-content: center;
+}
+
+.seat-row-label {
+  width: 26px;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--cb-text-secondary);
+  text-align: right;
+  margin-right: 0.5rem;
+}
+
+/* Individual Seat (Min 44x44 Touch Target conforming to Apple HIG) */
+.seat-target {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+.seat-target:focus-visible {
+  outline: 2px solid var(--cb-accent);
+  outline-offset: 2px;
+  border-radius: 9px;
+}
+
+/* Tactile physical squircle box */
+.seat-box {
+  width: 36px;
+  height: 33px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 600;
+  transition: transform 0.25s var(--cb-spring-crit), background 0.15s ease, border-color 0.15s ease, box-shadow 0.25s var(--cb-spring-crit);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+/* Instant depression on touch (Apple Guideline §1) */
+.seat-target:active:not(:disabled) .seat-box {
+  transform: scale(0.85);
+  transition: transform 70ms var(--cb-press-down);
+}
+
+/* Available */
+.seat-box.available {
+  background: var(--cb-surface);
+  border: 1.5px solid var(--cb-border);
+  color: var(--cb-text);
+}
+.seat-target:hover:not(:disabled) .seat-box.available {
+  border-color: var(--cb-accent);
+  background: var(--cb-accent-tint);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px var(--cb-accent-tint);
+}
+
+/* Selected (Apple Blue Pop Animation) */
+.seat-box.selected {
+  background: var(--cb-accent);
+  border: 1.5px solid var(--cb-accent);
+  color: #FFFFFF;
+  box-shadow: 0 4px 14px var(--cb-accent-glow);
+  animation: seat-pop 0.3s var(--cb-spring-bounce);
+}
+
+@keyframes seat-pop {
+  0%   { transform: scale(0.82); }
+  60%  { transform: scale(1.14); }
+  100% { transform: scale(1); }
+}
+
+/* Held by someone else */
+.seat-box.held {
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(255, 159, 10, 0.18),
+    rgba(255, 159, 10, 0.18) 4px,
+    rgba(255, 159, 10, 0.38) 4px,
+    rgba(255, 159, 10, 0.38) 8px
+  );
+  border: 1.5px solid var(--cb-warning);
+  color: var(--cb-warning);
+  cursor: not-allowed;
+}
+
+/* Booked */
+.seat-box.booked {
+  background: var(--cb-surface-2);
+  border: 1.5px solid var(--cb-border-subtle);
+  color: var(--cb-text-tertiary);
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* Conflict pulse */
+@keyframes seat-pulse-conflict {
+  0%   { transform: scale(1); }
+  50%  { transform: scale(1.25); background: var(--cb-danger); color: #FFF; }
+  100% { transform: scale(1); }
+}
+.seat-box.pulse-conflict {
+  animation: seat-pulse-conflict 0.6s ease-in-out;
+}
+
+/* Map Zoom Controls */
+.map-zoom-controls {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.45rem;
+  z-index: 10;
+}
+.map-zoom-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--cb-surface);
+  border: 1px solid var(--cb-border);
+  color: var(--cb-text);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: var(--cb-shadow-sm);
+  transition: transform 90ms var(--cb-press-down), background 0.15s ease, color 0.15s ease;
+}
+.map-zoom-btn:active {
+  transform: scale(0.92);
+}
+.map-zoom-btn:hover {
+  background: var(--cb-surface-2);
+  color: var(--cb-accent);
+}
+
+/* Legend */
+.seat-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.75rem;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--cb-border);
+}
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--cb-text-secondary);
+}
+.legend-box {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+}
+
+/* ============================================================
+   17. FLOATING TRANSLUCENT DOCK / SELECTION SHEET (Apple Glass Island)
+   ============================================================ */
+.cb-selection-sheet {
+  position: fixed;
+  bottom: 1.25rem;
+  left: 1rem;
+  right: 1rem;
+  max-width: 960px;
+  margin: 0 auto;
+  border-radius: var(--cb-radius-sheet);
+  background: var(--cb-sheet-bg);
+  backdrop-filter: blur(28px) saturate(190%);
+  -webkit-backdrop-filter: blur(28px) saturate(190%);
+  border: 1px solid var(--cb-glass-border);
+  box-shadow: var(--cb-shadow-float);
+  padding: 1rem 1.75rem;
+  z-index: 999;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translateY(calc(100% + 1.5rem));
+  transition: transform 0.35s var(--cb-spring-crit), opacity 0.25s ease, visibility 0s linear 0.35s;
+}
+
+.cb-selection-sheet.is-visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition-delay: 0s;
+}
+
+@media (max-width: 576px) {
+  .cb-selection-sheet {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    border-radius: 20px 20px 0 0;
+    padding: 1.1rem 1.25rem;
+  }
+}
+
+.cb-selection-sheet-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 1.25rem;
+}
+
+/* ============================================================
+   18. HOLD COUNTDOWN & SUMMARY PAGE
+   ============================================================ */
+.hold-timer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.55rem 1.15rem;
+  background: var(--cb-accent-tint);
+  border: 1px solid rgba(0, 113, 227, 0.25);
+  border-radius: var(--cb-radius-pill);
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  color: var(--cb-accent);
+  transition: all 0.25s var(--cb-spring-crit);
+}
+
+.hold-timer-badge.urgent {
+  background: var(--cb-danger-tint);
+  border-color: rgba(255, 69, 58, 0.35);
+  color: var(--cb-danger);
+  animation: pulse-timer 1s infinite alternate;
+}
+
+@keyframes pulse-timer {
+  from { transform: scale(1); }
+  to   { transform: scale(1.04); }
+}
+
+.summary-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-md);
+  padding: 2.25rem;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--cb-border);
+  font-size: 0.95rem;
+  letter-spacing: -0.008em;
+}
+
+.summary-row.total-row {
+  border-bottom: none;
+  padding-top: 1.25rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+/* ============================================================
+   19. TICKET CARDS & PRINT STYLES
+   ============================================================ */
+.ticket-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-lg);
+  padding: 2.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.ticket-header-strip {
+  background: linear-gradient(90deg, var(--cb-accent) 0%, rgba(0, 113, 227, 0.75) 100%);
+  color: #FFFFFF;
+  padding: 0.95rem 1.75rem;
+  margin: -2.5rem -2.5rem 1.85rem -2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.booking-item-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-sm);
+  padding: 1.6rem;
+  transition: transform 0.25s var(--cb-spring-crit), box-shadow 0.25s var(--cb-spring-crit);
+}
+.booking-item-card:hover {
+  box-shadow: var(--cb-shadow-md);
+  transform: translateY(-2px);
+}
+
+@media print {
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+  .cb-appbar,
+  .cb-footer,
+  .cb-btn,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+  .ticket-card {
+    box-shadow: none !important;
+    border: 1.5px solid #000000 !important;
+    padding: 1.5rem !important;
+  }
+  .ticket-header-strip {
+    background: #000000 !important;
+    color: #FFFFFF !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ============================================================
+   20. ADMIN PANEL LAYOUT & STAT CARDS
+   ============================================================ */
+.cb-admin-container {
+  max-width: 1300px;
+  margin: 0 auto;
+  padding: 1.75rem;
+}
+.cb-admin-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .cb-admin-layout { grid-template-columns: 1fr; }
+}
+.cb-admin-sidebar {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  padding: 1.25rem 0.75rem;
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-sm);
+  position: sticky;
+  top: 80px;
+}
+.cb-admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.95rem;
+  border-radius: var(--cb-radius-btn);
+  color: var(--cb-text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  margin-bottom: 0.25rem;
+}
+.cb-admin-nav-item:hover {
+  background: var(--cb-surface-2);
+  color: var(--cb-accent);
+  text-decoration: none;
+}
+.cb-admin-nav-item.active {
+  background: var(--cb-accent);
+  color: #FFFFFF !important;
+  font-weight: 600;
+}
+.cb-admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.75rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.cb-admin-title {
+  font-size: 1.85rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0;
+}
+
+/* Stat Cards */
+.cb-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+.cb-stat-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  padding: 1.4rem;
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-sm);
+}
+.cb-stat-label {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--cb-text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.4rem;
+}
+.cb-stat-value {
+  font-size: 2.15rem;
+  font-weight: 700;
+  color: var(--cb-text);
+  line-height: 1;
+  letter-spacing: -0.03em;
+}
+
+/* Admin Tables */
+.cb-table-card {
+  background: var(--cb-surface);
+  border-radius: var(--cb-radius-card);
+  border: 1px solid var(--cb-card-border);
+  box-shadow: var(--cb-shadow-sm);
+  overflow: hidden;
+}
+.cb-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9375rem;
+}
+.cb-table th {
+  background: var(--cb-surface-2);
+  padding: 0.85rem 1.1rem;
+  font-weight: 600;
+  color: var(--cb-text-secondary);
+  text-align: left;
+  border-bottom: 1px solid var(--cb-border);
+  font-size: 0.8125rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.cb-table td {
+  padding: 0.95rem 1.1rem;
+  border-bottom: 1px solid var(--cb-border);
+  vertical-align: middle;
+  color: var(--cb-text);
+}
+.cb-table tr:last-child td { border-bottom: none; }
+.cb-table tr:hover td { background: rgba(0, 0, 0, 0.015); }
+@media (prefers-color-scheme: dark) {
+  .cb-table tr:hover td { background: rgba(255, 255, 255, 0.02); }
+}
+
+.table-poster-thumb {
+  width: 44px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 7px;
+  background: var(--cb-surface-2);
+  display: block;
+}
+
+/* ============================================================
+   21. VIEW TRANSITIONS & FLUID MOTION (Apple Spring Timings)
+   ============================================================ */
+@view-transition {
+  navigation: auto;
+}
+
+/* Page entrance for standard cross-page transitions */
+@keyframes cb-page-enter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+main#main-content {
+  animation: cb-page-enter 0.32s var(--cb-spring-crit) both;
+}
+
+/* Cross-document View Transitions animations */
+::view-transition-old(root) {
+  animation: 0.26s var(--cb-spring-crit) both cb-fade-slide-out;
+}
+::view-transition-new(root) {
+  animation: 0.30s var(--cb-spring-crit) both cb-fade-slide-in;
+}
+
+@keyframes cb-fade-slide-out {
+  from {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.985) translateY(-6px);
+  }
+}
+
+@keyframes cb-fade-slide-in {
+  from {
+    opacity: 0;
+    transform: scale(1.012) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Morphing Poster & Title Transitions */
+::view-transition-group(poster-hero) {
+  animation-duration: 0.38s;
+  animation-timing-function: var(--cb-spring-crit);
+  overflow: hidden;
+  border-radius: 16px;
+}
+
+::view-transition-group(movie-title-hero) {
+  animation-duration: 0.32s;
+  animation-timing-function: var(--cb-spring-crit);
+}
+
+#movie-poster {
+  view-transition-name: poster-hero;
+}
+
+#movie-title {
+  view-transition-name: movie-title-hero;
+}
+
+/* Navigating tactile animation when Book Tickets is clicked */
+.movie-card.cb-navigating {
+  transform: scale(0.965) translateY(2px) !important;
+  box-shadow: 0 4px 18px var(--cb-accent-glow) !important;
+  transition: transform 80ms var(--cb-press-down), box-shadow 80ms ease !important;
+}
+
+.movie-card.cb-navigating .cb-btn-book {
+  background: var(--cb-accent-hover) !important;
+  box-shadow: 0 0 14px var(--cb-accent-glow) !important;
+}
+
+/* Typography Pass: Optical Apple Sizing, Tracking & Leading */
+h1, .h1 {
+  letter-spacing: -0.028em;
+  line-height: 1.15;
+  font-weight: 700;
+}
+h2, .h2 {
+  letter-spacing: -0.022em;
+  line-height: 1.20;
+  font-weight: 700;
+}
+h3, .h3 {
+  letter-spacing: -0.018em;
+  line-height: 1.25;
+  font-weight: 600;
+}
+h4, .h4, h5, .h5 {
+  letter-spacing: -0.014em;
+  line-height: 1.30;
+  font-weight: 600;
+}
+p, body, .body {
+  letter-spacing: -0.006em;
+  line-height: 1.52;
+}
+small, .text-secondary {
+  letter-spacing: -0.004em;
+}
+
+/* Animated SVG Checkmark for Confirmation Moment */
+.checkmark-wrapper {
+  display: inline-block;
+  width: 72px;
+  height: 72px;
+  margin: 0 auto;
+}
+.checkmark-svg {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 3.5;
+  stroke: var(--cb-success);
+  stroke-miterlimit: 10;
+  box-shadow: inset 0px 0px 0px var(--cb-success);
+  animation: fill-checkmark 0.4s ease-in-out 0.4s forwards, scale-checkmark 0.35s var(--cb-spring-bounce) 0.8s both;
+}
+.checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 3.5;
+  stroke-miterlimit: 10;
+  stroke: var(--cb-success);
+  fill: none;
+  animation: stroke-checkmark 0.5s var(--cb-spring-crit) forwards;
+}
+.checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke-checkmark 0.35s var(--cb-spring-crit) 0.5s forwards;
+}
+
+@keyframes stroke-checkmark {
+  100% { stroke-dashoffset: 0; }
+}
+@keyframes scale-checkmark {
+  0%, 100% { transform: none; }
+  50% { transform: scale3d(1.12, 1.12, 1); }
+}
+@keyframes fill-checkmark {
+  100% { box-shadow: inset 0px 0px 0px 3px var(--cb-success-tint); }
+}
+
+/* Scroll Edge Fades */
+.scroll-edge-fade {
+  position: relative;
+}
+.scroll-edge-fade::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 40px;
+  background: linear-gradient(to right, transparent, var(--cb-bg));
+  pointer-events: none;
+  opacity: 0.9;
+}
+
+/* ============================================================
+   22. ACCESSIBILITY & FALLBACKS (Apple Guideline §14)
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  .cb-btn:active,
+  .movie-card:active,
+  .date-chip:active,
+  .seat-target:active .seat-box {
+    transform: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  .checkmark-svg, .checkmark-circle, .checkmark-check {
+    animation: none !important;
+    stroke-dashoffset: 0 !important;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .cb-appbar,
+  .cb-selection-sheet,
+  .cb-alert {
+    backdrop-filter: none !important;
+    -webkit-backdrop-filter: none !important;
+    background: var(--cb-surface) !important;
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root {
+    --cb-border: #000000;
+    --cb-card-border: #000000;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --cb-border: #FFFFFF;
+      --cb-card-border: #FFFFFF;
+    }
+  }
+  .cb-card,
+  .movie-card,
+  .theatre-card,
+  .ticket-card,
+  .summary-card,
+  .cb-input,
+  .seat-box,
+  .booking-item-card {
+    border-width: 2px !important;
+  }
+}
+
+/* ============================================================
+   23. CATEGORY NAVIGATION & SECTIONS (Live Concerts, Shows, Streaming)
+   ============================================================ */
+.cb-category-nav-wrapper {
+  margin-bottom: 2rem;
+  position: relative;
+}
+
+.cb-category-nav {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding: 0.35rem 0.25rem 0.85rem;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.cb-category-nav::-webkit-scrollbar {
+  display: none;
+}
+
+.cb-category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.65rem 1.25rem;
+  border-radius: var(--cb-radius-pill);
+  background: var(--cb-surface);
+  border: 1.5px solid var(--cb-border);
+  color: var(--cb-text);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: -0.012em;
+  text-decoration: none;
+  white-space: nowrap;
+  scroll-snap-align: start;
+  transition: transform 0.25s var(--cb-spring-crit), background 0.15s ease, border-color 0.15s ease, box-shadow 0.25s var(--cb-spring-crit);
+  box-shadow: var(--cb-shadow-sm);
+  user-select: none;
+}
+
+.cb-category-pill:active {
+  transform: scale(0.95);
+  transition: transform 70ms var(--cb-press-down);
+}
+
+.cb-category-pill:hover {
+  border-color: var(--cb-accent);
+  color: var(--cb-accent);
+  text-decoration: none;
+  transform: translateY(-2px);
+  box-shadow: var(--cb-shadow-md);
+}
+
+.cb-category-pill.active {
+  background: var(--cb-accent);
+  border-color: var(--cb-accent);
+  color: #FFFFFF !important;
+  box-shadow: 0 4px 16px var(--cb-accent-glow);
+  transform: translateY(-1px);
+}
+
+.cb-category-pill .badge {
+  background: var(--cb-surface-2);
+  color: var(--cb-text-secondary);
+  border-radius: var(--cb-radius-pill);
+  font-size: 0.75rem;
+  padding: 0.2em 0.55em;
+  font-weight: 600;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.cb-category-pill.active .badge {
+  background: rgba(255, 255, 255, 0.25);
+  color: #FFFFFF;
+}
+
+/* Category Sections */
+.cb-category-section {
+  margin-bottom: 3.5rem;
+}
+
+.cb-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 1.35rem;
+  padding-bottom: 0.85rem;
+  border-bottom: 1px solid var(--cb-border);
+}
+
+.cb-section-title {
+  font-size: 1.45rem;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  color: var(--cb-text);
+}
+
+.cb-section-desc {
+  font-size: 0.875rem;
+  color: var(--cb-text-secondary);
+  margin-top: 0.25rem;
+  margin-bottom: 0;
+}
+
+.cb-card-category-badge {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 2;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  font-size: 0.72rem;
+  padding: 0.2rem 0.55rem;
+}

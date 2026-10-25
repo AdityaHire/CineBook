@@ -1,0 +1,77 @@
+{% extends "manage/base_admin.html" %}
+
+{% block title %}{% if is_create %}Add Theatre{% else %}Edit {{ theatre.theatre_name }}{% endif %} — Cenebook Admin{% endblock %}
+
+{% block admin_content %}
+<div style="max-width: 700px;">
+  <nav aria-label="breadcrumb" class="mb-3">
+    <ol class="breadcrumb" style="font-size:0.875rem;">
+      <li class="breadcrumb-item"><a href="{% url 'admin_theatre_list' %}" class="text-secondary">Theatres</a></li>
+      <li class="breadcrumb-item active text-secondary" aria-current="page">{% if is_create %}New Theatre{% else %}Edit Theatre{% endif %}</li>
+    </ol>
+  </nav>
+
+  <div class="cb-admin-header mb-3">
+    <div>
+      <h1 class="cb-admin-title">{% if is_create %}Add Theatre{% else %}Edit Theatre{% endif %}</h1>
+      <p class="text-secondary mb-0">Configure cinema venue and location</p>
+    </div>
+  </div>
+
+  <div class="cb-card p-4">
+    <form method="post" id="theatre-form">
+      {% csrf_token %}
+
+      {% if form.non_field_errors %}
+        <div class="cb-alert cb-alert-danger mb-4">
+          <i class="bi bi-exclamation-circle-fill"></i>
+          <div>
+            {% for error in form.non_field_errors %}
+              <div>{{ error }}</div>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="cb-form-group">
+        <label for="{{ form.theatre_name.id_for_label }}" class="cb-label">Theatre Name *</label>
+        {{ form.theatre_name }}
+        {% if form.theatre_name.errors %}
+          <div class="cb-error-text">{{ form.theatre_name.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="cb-form-group">
+        <label for="{{ form.location.id_for_label }}" class="cb-label">Location / Address *</label>
+        {{ form.location }}
+        {% if form.location.errors %}
+          <div class="cb-error-text">{{ form.location.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="cb-form-group">
+        <label for="{{ form.time_zone.id_for_label }}" class="cb-label">Time Zone (IANA) *</label>
+        {{ form.time_zone }}
+        <div class="form-text text-secondary" style="font-size:0.8125rem;">e.g. Asia/Kolkata, America/New_York, Europe/London</div>
+        {% if form.time_zone.errors %}
+          <div class="cb-error-text">{{ form.time_zone.errors.0 }}</div>
+        {% endif %}
+      </div>
+
+      <div class="cb-form-group form-check mb-4">
+        {{ form.is_active }}
+        <label class="form-check-label ms-1" for="{{ form.is_active.id_for_label }}">
+          Active (shows in search & catalog)
+        </label>
+      </div>
+
+      <div class="d-flex gap-2 pt-3 border-top mt-4">
+        <button type="submit" class="cb-btn cb-btn-primary" id="btn-save-theatre">
+          {% if is_create %}Create Theatre{% else %}Save Changes{% endif %}
+        </button>
+        <a href="{% url 'admin_theatre_list' %}" class="cb-btn cb-btn-secondary">Cancel</a>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}

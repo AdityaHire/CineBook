@@ -1,0 +1,105 @@
+{% extends "base_auth.html" %}
+{% load static %}
+
+{% block title %}Create Account — Cenebook{% endblock %}
+{% block meta_description %}Create your free Cenebook account to start booking movie tickets online.{% endblock %}
+
+{% block auth_page %}
+<div class="cb-auth-page">
+  <div class="cb-auth-card">
+
+    <div class="cb-auth-logo">🎬 Cenebook</div>
+    <h1 class="cb-auth-title">Create your account</h1>
+
+    {% if form.non_field_errors %}
+      <div class="cb-alert cb-alert-danger" role="alert">
+        <i class="bi bi-exclamation-circle-fill"></i>
+        {{ form.non_field_errors|join:", " }}
+      </div>
+    {% endif %}
+
+    <form method="post" action="/register/" novalidate id="register-form">
+      {% csrf_token %}
+
+      <!-- Name -->
+      <div class="cb-form-group">
+        <label class="cb-label" for="id_name">Name</label>
+        <input
+          type="text"
+          name="name"
+          id="id_name"
+          class="cb-input{% if form.name.errors %} is-invalid{% endif %}"
+          placeholder="Your full name"
+          value="{{ form.name.value|default:'' }}"
+          autocomplete="name"
+          required
+        />
+        {% if form.name.errors %}
+          <p class="cb-error-text">{{ form.name.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Email -->
+      <div class="cb-form-group">
+        <label class="cb-label" for="id_email">Email</label>
+        <input
+          type="email"
+          name="email"
+          id="id_email"
+          class="cb-input{% if form.email.errors %} is-invalid{% endif %}"
+          placeholder="you@example.com"
+          value="{{ form.email.value|default:'' }}"
+          autocomplete="email"
+          required
+        />
+        {% if form.email.errors %}
+          <p class="cb-error-text">{{ form.email.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Password -->
+      <div class="cb-form-group">
+        <label class="cb-label" for="id_password">Password</label>
+        <input
+          type="password"
+          name="password"
+          id="id_password"
+          class="cb-input{% if form.password.errors %} is-invalid{% endif %}"
+          placeholder="Min 8 characters"
+          autocomplete="new-password"
+          required
+          minlength="8"
+        />
+        {% if form.password.errors %}
+          <p class="cb-error-text">{{ form.password.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <!-- Confirm Password -->
+      <div class="cb-form-group">
+        <label class="cb-label" for="id_password_confirm">Confirm password</label>
+        <input
+          type="password"
+          name="password_confirm"
+          id="id_password_confirm"
+          class="cb-input{% if form.password_confirm.errors %} is-invalid{% endif %}"
+          placeholder="Repeat password"
+          autocomplete="new-password"
+          required
+        />
+        {% if form.password_confirm.errors %}
+          <p class="cb-error-text">{{ form.password_confirm.errors|join:", " }}</p>
+        {% endif %}
+      </div>
+
+      <button type="submit" class="cb-btn cb-btn-primary cb-btn-block" id="btn-register">
+        <i class="bi bi-person-plus"></i> Register
+      </button>
+    </form>
+
+    <p class="cb-auth-footer">
+      Already have an account? <a href="/login/">Login</a>
+    </p>
+  </div>
+</div>
+{% endblock %}

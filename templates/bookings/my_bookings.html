@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}My Bookings — Cenebook{% endblock %}
+{% block meta_description %}View and manage your upcoming and past movie ticket bookings.{% endblock %}
+
+{% block content %}
+<div class="cb-container py-5" style="max-width: 860px;">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+    <div>
+      <h1 class="h3 fw-bold mb-1" style="letter-spacing:-0.02em;">My Bookings</h1>
+      <p class="text-secondary mb-0">Browse your ticket history and manage reservations</p>
+    </div>
+    <a href="/" class="cb-btn cb-btn-secondary cb-btn-sm">
+      <i class="bi bi-film"></i> Browse Movies
+    </a>
+  </div>
+
+  <!-- Tabs Navigation -->
+  <div class="d-flex gap-2 mb-4 border-bottom pb-2" role="tablist">
+    <a
+      href="?tab=upcoming"
+      class="cb-btn {% if tab == 'upcoming' %}cb-btn-primary{% else %}cb-btn-secondary{% endif %} cb-btn-sm"
+      id="tab-upcoming"
+      role="tab"
+    >
+      <i class="bi bi-calendar-event me-1"></i> Upcoming ({{ upcoming_count }})
+    </a>
+    <a
+      href="?tab=past"
+      class="cb-btn {% if tab == 'past' %}cb-btn-primary{% else %}cb-btn-secondary{% endif %} cb-btn-sm"
+      id="tab-past"
+      role="tab"
+    >
+      <i class="bi bi-clock-history me-1"></i> Past ({{ past_count }})
+    </a>
+  </div>
+
+  <!-- Bookings List -->
+  {% if bookings_data %}
+    <div class="d-flex flex-column gap-3 mb-5" id="bookings-list">
+      {% for item in bookings_data %}
+        <div class="booking-item-card" id="booking-card-{{ item.booking.booking_reference }}">
+          <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-2">
+            <div>
+              <span class="fw-bold font-monospace text-accent me-2" style="font-size:1.05rem;">
+                {{ item.booking.booking_reference }}
+              </span>
+              {% if item.booking.booking_status == 'confirmed' %}
+                <span class="cb-badge cb-badge-success">Confirmed</span>
+              {% else %}
+                <span class="cb-badge cb-badge-muted">Cancelled</span>
+              {% endif %}
+            </div>
+
+            <div class="text-end">
+              <strong style="font-size:1.1rem;">Rs {{ item.booking.total_amount }}</strong>
+              {% if item.booking.payment_status == 'refunded' %}
+                <span class="text-secondary" style="font-size:0.8125rem;"> (Refunded)</span>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="row align-items-center mt-2">
+            <div class="col-md-8">
+              <h2 class="h5 fw-bold mb-1">{{ item.booking.show.movie.title }}</h2>
+              <div class="text-secondary" style="font-size:0.9rem;">
+                <span>{{ item.booking.show.screen.theatre.theatre_name }}</span> &bull;
+                <span>{{ item.booking.show.screen.screen_name }}</span>
+              </div>
+              <div class="text-secondary mt-1" style="font-size:0.875rem;">
+                <i class="bi bi-calendar me-1"></i>{{ item.local_start|date:"D, d M Y · h:i A" }}
+              </div>
+              <div class="mt-2">
+                <span class="text-secondary" style="font-size:0.8125rem;">Seats: </span>
+                {% for seat in item.seat_list %}
+                  <span class="cb-badge cb-badge-accent me-1">{{ seat }}</span>
+                {% endfor %}
+              </div>
+            </div>
+
+            <div class="col-md-4 text-md-end mt-3 mt-md-0 d-flex gap-2 justify-content-md-end">
+              <a
+                href="/bookings/{{ item.booking.booking_reference }}/"
+                class="cb-btn cb-btn-secondary cb-btn-sm"
+                id="btn-view-ticket-{{ item.booking.booking_reference }}"
+              >
+                <i class="bi bi-ticket-perforated"></i> View Ticket
+              </a>
+
+              {% if item.can_cancel %}
+                <button
+                  type="button"
+                  class="cb-btn cb-btn-secondary cb-btn-sm text-danger btn-cancel-booking"
+                  id="btn-cancel-{{ item.booking.booking_reference }}"
+                  data-reference="{{ item.booking.booking_reference }}"
+                  data-amount="{{ item.booking.total_amount }}"
+                >
+                  <i class="bi bi-x-circle"></i> Cancel
+                </button>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+      {% endfor %}
+    </div>
+
+  {% else %}
+    <!-- Empty State -->
+    <div class="cb-card text-center py-5 my-4">
+      <div class="display-5 text-secondary mb-3"><i class="bi bi-ticket-perforated"></i></div>
+      {% if tab == 'upcoming' %}
+        <h3 class="h5 fw-bold">You have no upcoming bookings</h3>
+        <p class="text-secondary mb-4">Discover the latest movies and book your cinema seats today.</p>
+        <a href="/" class="cb-btn cb-btn-primary">Browse Movies</a>
+      {% else %}
+        <h3 class="h5 fw-bold">No past bookings found</h3>
+        <p class="text-secondary mb-0">Your completed and cancelled screenings will be shown here.</p>
+      {% endif %}
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'js/api.js' %}"></script>
+<script src="{% static 'js/cancel.js' %}"></script>
+{% endblock %}

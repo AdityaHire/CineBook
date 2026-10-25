@@ -1,0 +1,150 @@
+{% extends "manage/base_admin.html" %}
+
+{% block title %}Manage Movies — Cenebook Admin{% endblock %}
+
+{% block admin_content %}
+<div>
+  <!-- Header -->
+  <div class="cb-admin-header">
+    <div>
+      <h1 class="cb-admin-title">Movies</h1>
+      <p class="text-secondary mb-0">Create, update, archive, and manage movie listings</p>
+    </div>
+    <a href="{% url 'admin_movie_create' %}" class="cb-btn cb-btn-primary" id="btn-add-movie">
+      <i class="bi bi-plus-lg"></i> Add Movie
+    </a>
+  </div>
+
+  <!-- Search & Filter Bar -->
+  <div class="cb-card mb-4 p-3">
+    <form method="get" class="row g-2 align-items-center">
+      <div class="col-md-6">
+        <input
+          type="search"
+          name="q"
+          class="cb-input"
+          placeholder="Search by title…"
+          value="{{ query }}"
+          id="admin-movie-search"
+        />
+      </div>
+      <div class="col-md-4">
+        <select name="status" class="cb-input" id="admin-movie-status-filter" onchange="this.form.submit()">
+          <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Statuses</option>
+          <option value="now_showing" {% if status_filter == 'now_showing' %}selected{% endif %}>Now Showing</option>
+          <option value="archived" {% if status_filter == 'archived' %}selected{% endif %}>Archived</option>
+        </select>
+      </div>
+      <div class="col-md-2 d-flex gap-1">
+        <button type="submit" class="cb-btn cb-btn-secondary cb-btn-block">Filter</button>
+        {% if query or status_filter != 'all' %}
+          <a href="{% url 'admin_movie_list' %}" class="cb-btn cb-btn-secondary" title="Reset filter"><i class="bi bi-x-lg"></i></a>
+        {% endif %}
+      </div>
+    </form>
+  </div>
+
+  <!-- Movies Table -->
+  <div class="cb-table-card">
+    <div class="table-responsive">
+      <table class="cb-table" id="admin-movies-table">
+        <thead>
+          <tr>
+            <th style="width: 60px;">Poster</th>
+            <th>Title</th>
+            <th>Genre / Language</th>
+            <th>Duration</th>
+            <th>Release Date</th>
+            <th>Status</th>
+            <th class="text-end">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if page_obj.object_list %}
+            {% for movie in page_obj.object_list %}
+              <tr>
+                <td>
+                  {% if movie.poster_url %}
+                    <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" class="table-poster-thumb" onerror="this.style.display='none'" />
+                  {% else %}
+                    <div class="table-poster-thumb d-flex align-items-center justify-content-center text-secondary">
+                      <i class="bi bi-film"></i>
+                    </div>
+                  {% endif %}
+                </td>
+                <td class="fw-semibold">
+                  <a href="{% url 'admin_movie_edit' movie.id %}" id="movie-title-{{ movie.id }}">{{ movie.title }}</a>
+                </td>
+                <td>
+                  <div>{{ movie.genre }}</div>
+                  <div class="text-secondary" style="font-size:0.8125rem;">{{ movie.language }}</div>
+                </td>
+                <td>{{ movie.duration_display }}</td>
+                <td>{{ movie.release_date|date:"d M Y" }}</td>
+                <td>
+                  {% if movie.status == 'now_showing' %}
+                    <span class="cb-badge cb-badge-success">Now Showing</span>
+                  {% else %}
+                    <span class="cb-badge cb-badge-muted">Archived</span>
+                  {% endif %}
+                </td>
+                <td class="text-end">
+                  <div class="d-inline-flex gap-1">
+                    <a href="{% url 'admin_movie_edit' movie.id %}" class="cb-btn cb-btn-secondary cb-btn-sm" title="Edit movie" id="btn-edit-movie-{{ movie.id }}">
+                      <i class="bi bi-pencil"></i> Edit
+                    </a>
+
+                    {% if movie.status == 'now_showing' %}
+                      <form method="post" action="{% url 'admin_movie_archive' movie.id %}" onsubmit="return confirm('Archive “{{ movie.title|escapejs }}”? Archived movies are hidden from users. Existing bookings are kept.');" style="margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="cb-btn cb-btn-secondary cb-btn-sm text-secondary" title="Archive movie" id="btn-archive-movie-{{ movie.id }}">
+                          <i class="bi bi-archive"></i> Archive
+                        </button>
+                      </form>
+                    {% else %}
+                      <form method="post" action="{% url 'admin_movie_restore' movie.id %}" style="margin:0;">
+                        {% csrf_token %}
+                        <button type="submit" class="cb-btn cb-btn-secondary cb-btn-sm text-success" title="Restore movie" id="btn-restore-movie-{{ movie.id }}">
+                          <i class="bi bi-arrow-counterclockwise"></i> Restore
+                        </button>
+                      </form>
+                    {% endif %}
+                  </div>
+                </td>
+              </tr>
+            {% endfor %}
+          {% else %}
+            <tr>
+              <td colspan="7" class="text-center py-5 text-secondary">
+                No movies found.
+              </td>
+            </tr>
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Pagination -->
+  {% if page_obj.paginator.num_pages > 1 %}
+    <div class="d-flex justify-content-center mt-4">
+      <ul class="pagination pagination-sm gap-1">
+        {% if page_obj.has_previous %}
+          <li><a class="cb-btn cb-btn-secondary cb-btn-sm" href="?page={{ page_obj.previous_page_number }}{% if query %}&q={{ query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">&laquo; Prev</a></li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+          {% if page_obj.number == num %}
+            <li class="active"><span class="cb-btn cb-btn-primary cb-btn-sm">{{ num }}</span></li>
+          {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+            <li><a class="cb-btn cb-btn-secondary cb-btn-sm" href="?page={{ num }}{% if query %}&q={{ query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">{{ num }}</a></li>
+          {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+          <li><a class="cb-btn cb-btn-secondary cb-btn-sm" href="?page={{ page_obj.next_page_number }}{% if query %}&q={{ query }}{% endif %}{% if status_filter %}&status={{ status_filter }}{% endif %}">Next &raquo;</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  {% endif %}
+
+</div>
+{% endblock %}

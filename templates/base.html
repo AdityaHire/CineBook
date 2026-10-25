@@ -1,0 +1,134 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="auto">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Cenebook{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}Book movie tickets online — browse, pick seats, and confirm in seconds.{% endblock %}" />
+  <!-- View Transitions API opt-in (Chrome 111+) -->
+  <meta name="view-transition" content="same-origin" />
+
+  <!-- Bootstrap 5 CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <!-- Bootstrap Icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
+  <!-- Cenebook design system -->
+  <link rel="stylesheet" href="{% static 'css/site.css' %}" />
+
+  {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<header class="cb-appbar" id="cb-appbar">
+  <a href="/" class="cb-appbar-brand">🎬 Cenebook</a>
+
+  <!-- Search (home page search navigates; on other pages it goes to home) -->
+  <form class="cb-appbar-search d-none d-md-block" method="get" action="/">
+    <input
+      type="search"
+      name="q"
+      placeholder="Search movies…"
+      value="{{ request.GET.q|default:'' }}"
+      aria-label="Search movies"
+      id="navbar-search"
+    />
+  </form>
+
+  <nav class="cb-appbar-nav">
+    {% if user.is_authenticated %}
+      {% if user.is_admin %}
+        <a href="/manage/" id="nav-admin"><i class="bi bi-shield-check"></i> Admin</a>
+      {% endif %}
+      <a href="/bookings/" id="nav-my-bookings"><i class="bi bi-ticket-perforated"></i> My Bookings</a>
+      <span class="cb-nav-user d-none d-sm-inline">Hi, {{ user.name|truncatechars:12 }}</span>
+      <form method="post" action="/logout/" style="margin:0">
+        {% csrf_token %}
+        <button type="submit" class="cb-btn cb-btn-secondary cb-btn-sm" id="nav-logout">Logout</button>
+      </form>
+    {% else %}
+      <a href="/login/" id="nav-login" class="cb-btn cb-btn-secondary cb-btn-sm">Login</a>
+      <a href="/register/" id="nav-register" class="cb-btn cb-btn-primary cb-btn-sm">Register</a>
+    {% endif %}
+  </nav>
+</header>
+
+<!-- ── MESSAGES ── -->
+{% if messages %}
+<div class="cb-container" style="padding-top:1rem" id="messages-container">
+  {% for message in messages %}
+    <div class="cb-alert cb-alert-{% if message.tags == 'error' %}danger{% elif message.tags == 'warning' %}warning{% elif message.tags == 'success' %}success{% else %}info{% endif %}" role="alert">
+      {% if message.tags == 'success' %}<i class="bi bi-check-circle-fill"></i>
+      {% elif message.tags == 'error' %}<i class="bi bi-exclamation-circle-fill"></i>
+      {% elif message.tags == 'warning' %}<i class="bi bi-exclamation-triangle-fill"></i>
+      {% else %}<i class="bi bi-info-circle-fill"></i>{% endif %}
+      {{ message }}
+    </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<!-- ── MAIN CONTENT ── -->
+<main id="main-content">
+  {% block content %}{% endblock %}
+</main>
+
+<!-- ── FOOTER ── -->
+<footer class="cb-footer">
+  <p>© 2026 Cenebook &nbsp;·&nbsp; <em>Simulated payments — demo project</em></p>
+</footer>
+
+<!-- Bootstrap 5 JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- Scroll shadow on appbar -->
+<script>
+  (function () {
+    const bar = document.getElementById('cb-appbar');
+    if (!bar) return;
+    const onScroll = () => bar.classList.toggle('scrolled', window.scrollY > 4);
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // Fluid Apple-style navigation transitions
+  document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('pointerdown', (e) => {
+      // 1. Movie card / Book ticket click
+      const card = e.target.closest('.movie-card');
+      if (card) {
+        // Clear any previous active elements
+        document.querySelectorAll('[data-vt-active]').forEach(el => {
+          el.style.viewTransitionName = '';
+          delete el.dataset.vtActive;
+        });
+
+        // Set view-transition-name dynamically ONLY on the clicked card
+        const poster = card.querySelector('.movie-card-poster') || card.querySelector('img');
+        if (poster) {
+          poster.style.viewTransitionName = 'poster-hero';
+          poster.dataset.vtActive = 'true';
+        }
+        const title = card.querySelector('.movie-card-title');
+        if (title) {
+          title.style.viewTransitionName = 'movie-title-hero';
+          title.dataset.vtActive = 'true';
+        }
+
+        // Tactile compression
+        card.classList.add('cb-navigating');
+      }
+
+      // 2. Showtime pill click
+      const showtimeBtn = e.target.closest('.showtime-btn:not(.disabled)');
+      if (showtimeBtn) {
+        showtimeBtn.style.transform = 'scale(0.93)';
+      }
+    }, { passive: true });
+  });
+</script>
+
+{% block extra_js %}{% endblock %}
+</body>
+</html>
