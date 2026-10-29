@@ -117,7 +117,7 @@ python manage.py test
 | `CatalogModelAndServiceTests` | Duration, seat generation, overlap logic |
 | `CatalogViewsTests` | Home, search, movie details, show API |
 
----
+--
 
 ## Environment Variables (`.env`)
 
@@ -129,7 +129,7 @@ python manage.py test
 | `SESSION_COOKIE_SECURE` | `False` | Set `True` when behind HTTPS |
 | `CSRF_COOKIE_SECURE` | `False` | Set `True` when behind HTTPS |
 
----
+--
 
 ## Production Checklist
 
